@@ -1,10 +1,12 @@
 package com.oprprojet.safetyNet.model;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 import lombok.Data;
 
 @Data
+@JsonFilter("PersonJsonFilter")
 public class Person {
-	// attributs de la classe Person
 		private String firstName;
 		private String lastName;
 		private String address;
@@ -12,4 +14,11 @@ public class Person {
 		private int zip;
 		private String phone;
 		private String email;
+
+
+
+
+
 }
+
+

@@ -1,9 +1,16 @@
 package com.oprprojet.safetyNet.model;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.oprprojet.safetyNet.repository.Reader;
+
+import jakarta.persistence.Entity;
 import lombok.Data;
 
 /**
@@ -19,6 +26,4 @@ public class Donnees {
 	private List<Person> personList;
 	@JsonAlias({ "medicalrecords" })
 	private List<MedicalRecord> medicalRecordList;
-
-
 }
