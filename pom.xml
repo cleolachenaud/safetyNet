@@ -60,6 +60,13 @@
 			<scope>provided</scope>
 		</dependency>
 		
+				<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-inline</artifactId>
+    <version>4.0.0</version> <!-- Vérifiez la dernière version -->
+    <scope>test</scope>
+</dependency>
+		
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
