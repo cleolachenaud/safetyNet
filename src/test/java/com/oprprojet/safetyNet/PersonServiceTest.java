@@ -68,26 +68,9 @@ public class PersonServiceTest {
     	donneesBrutes.setFireStations(new ArrayList<FireStation>());
     	donneesBrutes.setMedicalRecords(new ArrayList<MedicalRecord>());
     	List<Person> personList = new ArrayList<Person>();
-
-    	Person person1 = createPerson(
-    			"Appa",
-    			"Paddaone",
-    			"36 rue des paddas",
-    			"paddaVille",
-    			37100,
-    			"841-874-7462",
-    			"appa@email.com"
-    			);
-        
-    	Person person2 = createPerson(
-    			"Moja",
-    			"Paddatwo",
-    			"36 rue des paddas",
-    			"paddaVille",
-    			37100,
-    			"843-894-7462",
-    			"moja@email.com"
-    			); 
+    	Person person1 = new Person("Appa", "Paddaone", "36 rue des paddas", "paddaVille", 37100, "841-874-7462", "appa@email.com");
+    	Person person2 = new Person("Moja", "Paddatwo", "36 rue des paddas", "paddaVille", 37100, "843-894-7462", "moja@email.com");
+    	
     	personList.add(person1);
     	personList.add(person2);
     	donneesBrutes.setPersons(personList);
@@ -103,17 +86,7 @@ public class PersonServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-
-    	Person person3 = createPerson(
-    			"Marley",
-    			"Paddathree",
-    			"12 rue des gloutons",
-    			"paddaVille",
-    			37100,
-    			"561-094-3928",
-    			"marley@email.com"
-    			);
-        
+    	Person person3 = new Person("Marley", "Paddathree", "12 rue des gloutons", "paddaVille", 37100, "561-094-3928", "marley@email.com");
      	try {
      		personService.addPerson(person3);
      	} catch (Exception e) {
@@ -132,15 +105,7 @@ public class PersonServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-    	Person person1 = createPerson(
-    			"Appa",
-    			"Paddaone",
-    			"36 rue des paddas",
-    			"paddaVille",
-    			37100,
-    			"841-874-7462",
-    			"appa@email.com"
-    			);
+    	Person person1 = new Person("Appa", "Paddaone", "36 rue des paddas", "paddaVille", 37100, "841-874-7462", "appa@email.com");
      	try {
      		personService.updatePerson(person1);
      	} catch (Exception e) {
@@ -159,10 +124,8 @@ public class PersonServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-        Person person1 = new Person();
-        person1.setFirstName("Appa");
-        person1.setLastName("Paddaone");
-        
+    	Person person1 = new Person("Appa", "Paddaone", null, null, 0, null, null);
+
      	try {
      		personService.deletePerson(person1);
      	} catch (Exception e) {
@@ -173,19 +136,5 @@ public class PersonServiceTest {
         Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
         assertEquals("la liste de données doit être égale à 1", 1, argumentCaptorDonnees.getValue().getPersons().size());
-        //assertEquals("les éléments de la variable station doivent être identiques à ceux capturées par le mock", null, argumentCaptorDonnees.getValue().getFireStations().get(1));
-    }
-    
-    
-    private Person createPerson(String firstName, String LastName, String address, String city, int zip, String phone, String email){
-    	 Person person = new Person();
-    	 person.setFirstName(firstName);
-    	 person.setLastName(LastName);
-    	 person.setAddress(address);
-    	 person.setCity(city);
-    	 person.setZip(zip);
-    	 person.setPhone(phone);
-    	 person.setEmail(email);
-    	 return person;
     }
 }

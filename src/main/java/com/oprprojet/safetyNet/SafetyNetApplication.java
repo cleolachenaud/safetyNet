@@ -26,7 +26,7 @@ public class SafetyNetApplication implements CommandLineRunner {
 		//Donnees donnees = Reader.jsonReader("C:\\Users\\cleol\\Desktop\\PROJET5\\safetyNet\\src\\main\\resources\\data.json");
 		//Writer.jsonWriter("C:\\Users\\cleol\\Desktop\\PROJET5\\safetyNet\\donneesSorties\\fichierSortie.json", donnees);
 		System.out.println(properties.getApiUrl());
-		DonneesLieesController donneesLieesController = new DonneesLieesController();
-		System.out.println(donneesLieesController.childAlertAddress("1509 Culver St"));
+		//DonneesLieesController donneesLieesController = new DonneesLieesController();
+		//System.out.println(donneesLieesController.childAlertAddress("1509 Culver St"));
 	}
 }

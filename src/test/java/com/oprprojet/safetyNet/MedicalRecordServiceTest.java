@@ -66,22 +66,11 @@ public class MedicalRecordServiceTest {
     	donneesBrutes.setFireStations(new ArrayList<FireStation>());
     	donneesBrutes.setPersons(new ArrayList<Person>());
     	List<MedicalRecord> medicalRecordList = new ArrayList<MedicalRecord>();
-
-    	MedicalRecord medicalRecord1 = createMedicalRecord(
-    			"Appa",
-    			"Paddaone",
-    			"2021-04-14",
-    			new ArrayList<String>(List.of("baytril","celestene")),
-    			new ArrayList<String>(List.of("avocat","chocolat"))
-    			);
-        
-    	MedicalRecord medicalRecord2 = createMedicalRecord(
-    			"Moja",
-    			"Paddatwo",
-    			"2021-05-19",
-    			new ArrayList<String>(List.of("","")),
-    			new ArrayList<String>(List.of("avocat","chocolat"))
-    			); 
+    	Date birthdate = createBirthdate("2021-04-14");
+    	MedicalRecord medicalRecord1 = new MedicalRecord("Appa", "Paddaone", birthdate, List.of("baytril"), List.of("avocat"));
+    	Date birthdate2 = createBirthdate("2021-05-19");
+    	MedicalRecord medicalRecord2 = new MedicalRecord("Moja", "Paddatwo", birthdate2, List.of(""), List.of("avocat", "chocolat"));
+ 
     	medicalRecordList.add(medicalRecord1);
     	medicalRecordList.add(medicalRecord2);
     	donneesBrutes.setMedicalRecords(medicalRecordList);
@@ -95,16 +84,8 @@ public class MedicalRecordServiceTest {
     @Test
     public void addMedicalRecordTest() throws Exception {
     	String erreurLoggee = "";
-
-     	// Appelez la méthode d'ajout
-    	MedicalRecord medicalRecord3 = createMedicalRecord(
-    			"Marley",
-    			"Paddathree",
-    			"2021-06-21",
-    			new ArrayList<String>(List.of("","")),
-    			new ArrayList<String>(List.of("avocat"))
-    			);
-        
+    	Date birthdate = createBirthdate("2021-06-21");
+    	MedicalRecord medicalRecord3 = new MedicalRecord("Marley", "Paddathree", birthdate, List.of(""), List.of("avocat"));
      	try {
      		medicalRecordService.addMedicalRecord(medicalRecord3);
      	} catch (Exception e) {
@@ -123,13 +104,9 @@ public class MedicalRecordServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-    	MedicalRecord medicalRecord1 = createMedicalRecord(
-    			"Appa",
-    			"Paddaone",
-    			"2021-04-14",
-    			new ArrayList<String>(List.of("baytril")),
-    			new ArrayList<String>(List.of("avocat"))
-    			);
+    	Date birthdate = createBirthdate("2021-04-14");
+    	MedicalRecord medicalRecord1 = new MedicalRecord("Appa", "Paddaone", birthdate, List.of("baytril"), List.of("avocat"));
+    	
      	try {
      		medicalRecordService.updateMedicalRecord(medicalRecord1);
      	} catch (Exception e) {
@@ -148,9 +125,7 @@ public class MedicalRecordServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-        MedicalRecord medicalRecord1 = new MedicalRecord();
-        medicalRecord1.setFirstName("Moja");
-        medicalRecord1.setLastName("Paddatwo");
+        MedicalRecord medicalRecord1 = new MedicalRecord("Moja", "Paddatwo", null, List.of("",""), List.of("",""));
         
      	try {
      		medicalRecordService.deleteMedicalRecord(medicalRecord1);
@@ -162,20 +137,10 @@ public class MedicalRecordServiceTest {
         Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
         assertEquals("la liste de données doit être égale à 1", 1, argumentCaptorDonnees.getValue().getMedicalRecords().size());
-        //assertEquals("les éléments de la variable station doivent être identiques à ceux capturées par le mock", null, argumentCaptorDonnees.getValue().getFireStations().get(1));
     }
-    
-    
-    private MedicalRecord createMedicalRecord(String firstName, String LastName, String birthdate, List<String> medications, List<String> allergies) throws ParseException {
-    	 MedicalRecord medicalRecord = new MedicalRecord();
-    	 // pour la simplicité du test, nous transformons le string du paramètre en date
-         SimpleDateFormat simpleDateFormat  = new SimpleDateFormat("yyyy-MM-dd");
+    private Date createBirthdate(String birthdate) throws ParseException {
+    	 SimpleDateFormat simpleDateFormat  = new SimpleDateFormat("yyyy-MM-dd");
          Date birthdateDate = simpleDateFormat.parse(birthdate);
-    	 medicalRecord.setFirstName(firstName);
-    	 medicalRecord.setLastName(LastName);
-    	 medicalRecord.setBirthdate(birthdateDate);
-    	 medicalRecord.setMedications(medications);
-    	 medicalRecord.setAllergies(allergies);
-    	 return medicalRecord;
+         return birthdateDate;
     }
 }

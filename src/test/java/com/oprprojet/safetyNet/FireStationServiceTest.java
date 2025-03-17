@@ -58,16 +58,11 @@ public class FireStationServiceTest {
     	
         // Créez un objet FireStation à ajouter
     	Donnees donneesBrutes = new Donnees();
-    	//donneesBrutes.setFireStations(new ArrayList<FireStation>());
     	donneesBrutes.setPersons(new ArrayList<Person>());
     	donneesBrutes.setMedicalRecords(new ArrayList<MedicalRecord>());
     	List<FireStation> fireStationList = new ArrayList<FireStation>();
-        FireStation station5 = new FireStation();
-        station5.setAddress("address5");
-        station5.setStation(5);
-        FireStation station6 = new FireStation();
-        station6.setAddress("address6");
-        station6.setStation(6);
+        FireStation station5 = new FireStation("address5", 5);
+        FireStation station6 = new FireStation("address6", 6);
     	fireStationList.add(station5);
     	fireStationList.add(station6);
     	donneesBrutes.setFireStations(fireStationList);
@@ -81,20 +76,9 @@ public class FireStationServiceTest {
     @Test
     public void addFireStationTest() throws Exception {
     	String erreurLoggee = "";
-/*
-        // Créez un objet FireStation à ajouter
-    	Donnees donneesBrutes = new Donnees();
-    	donneesBrutes.setFireStations(new ArrayList<FireStation>());
-    	donneesBrutes.setPersons(new ArrayList<Person>());
-    	donneesBrutes.setMedicalRecords(new ArrayList<MedicalRecord>());
 
-        // Simuler le comportement du reader et writer
-        Mockito.when(jsonReaderMock.jsonReader()).thenReturn(donneesBrutes);
-*/
      	// Appelez la méthode d'ajout
-        FireStation station7 = new FireStation();
-        station7.setAddress("address7");
-        station7.setStation(7);
+        FireStation station7 = new FireStation("address7", 7);
         
      	try {
      		fireStationService.addFireStation(station7);
@@ -114,9 +98,7 @@ public class FireStationServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-        FireStation station6 = new FireStation();
-        station6.setAddress("address6");
-        station6.setStation(9);
+        FireStation station6 = new FireStation("address6", 6);
         
      	try {
      		fireStationService.updateFireStation(station6);
@@ -136,9 +118,7 @@ public class FireStationServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-        FireStation station6 = new FireStation();
-        station6.setAddress("address6");
-        station6.setStation(6);
+        FireStation station6 = new FireStation("address6", 6);
         
      	try {
      		fireStationService.deleteFireStation(station6);
@@ -150,6 +130,5 @@ public class FireStationServiceTest {
         Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
         assertEquals("la liste de données doit être égale à 1", 1, argumentCaptorDonnees.getValue().getFireStations().size());
-        //assertEquals("les éléments de la variable station doivent être identiques à ceux capturées par le mock", null, argumentCaptorDonnees.getValue().getFireStations().get(1));
     }
 }

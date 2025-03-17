@@ -1,9 +1,12 @@
 package com.oprprojet.safetyNet.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +20,7 @@ import com.oprprojet.safetyNet.service.MedicalRecordService;
 @RestController
 @RequestMapping("/medicalRecord")
 public class MedicalRecordController {
-
+	 private static final Logger logger = LogManager.getLogger(MedicalRecord.class);
 	
 	@Autowired
 	MedicalRecordService medicalRecordService;
@@ -28,13 +31,15 @@ public class MedicalRecordController {
 	 * @param medicalRecord
 	 * @return
 	 */
-    public ResponseEntity<MedicalRecord> createMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<MedicalRecord> createMedicalRecord(@PathVariable String firstName, String lastName, @RequestBody MedicalRecord medicalRecord) {
 		try {
 			medicalRecordService.addMedicalRecord(medicalRecord);
 		} catch (Exception e) {
-	        return new ResponseEntity<>(medicalRecord, HttpStatus.NOT_MODIFIED);
+			logger.error("createMedicalRecord : le medicalRecord n'a pas été crée ");
+			return ResponseEntity.notFound().build();
 		}
-        return new ResponseEntity<>(medicalRecord, HttpStatus.CREATED);
+		logger.info("createMedicalRecord : réponse OK, le medicalRecord est crée");
+		return ResponseEntity.ok(medicalRecord);
     }
 	
 	@DeleteMapping
@@ -43,13 +48,15 @@ public class MedicalRecordController {
 	 * @param medicalRecord
 	 * @return
 	 */
-    public ResponseEntity<MedicalRecord> deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<MedicalRecord> deleteMedicalRecord(@PathVariable String firstName, String lastName, @RequestBody MedicalRecord medicalRecord) {
 		try {
 			medicalRecordService.deleteMedicalRecord(medicalRecord);
 		} catch (Exception e) {
-	        return new ResponseEntity<>(medicalRecord, HttpStatus.NOT_MODIFIED);
+			logger.error("deleteMedicalRecord : le medicalRecord n'a pas été supprimé ");
+			return ResponseEntity.notFound().build();
 		}
-        return new ResponseEntity<>(medicalRecord, HttpStatus.ACCEPTED);
+		logger.info("deleteMedicalRecord : réponse OK, le medicalRecord est supprimé");
+		return ResponseEntity.ok(medicalRecord);
     }
 	@PutMapping
 	/**
@@ -57,12 +64,14 @@ public class MedicalRecordController {
 	 * @param medicalRecord
 	 * @return
 	 */
-    public ResponseEntity<MedicalRecord> majMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<MedicalRecord> majMedicalRecord(@PathVariable String firstName, String lastName, @RequestBody MedicalRecord medicalRecord) {
 		try {
 			medicalRecordService.updateMedicalRecord(medicalRecord);
 		} catch (Exception e) {
-	        return new ResponseEntity<>(medicalRecord, HttpStatus.NOT_MODIFIED);
+			logger.error("updateMedicalRecord : le medicalRecord n'a pas été mis à jour ");
+			return ResponseEntity.notFound().build();
 		}
-        return new ResponseEntity<>(medicalRecord, HttpStatus.ACCEPTED);
+		logger.info("updateMedicalRecord : réponse OK, le medicalRecord est mis à jour");
+		return ResponseEntity.ok(medicalRecord);
     }
 }

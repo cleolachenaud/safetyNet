@@ -1,9 +1,12 @@
 package com.oprprojet.safetyNet.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +20,7 @@ import com.oprprojet.safetyNet.service.PersonService;
 @RestController
 @RequestMapping("/person")
 public class PersonController {
-	
+	 private static final Logger logger = LogManager.getLogger(Person.class);
 	@Autowired
 	PersonService personService;
 
@@ -27,13 +30,15 @@ public class PersonController {
 	 * @param person
 	 * @return
 	 */
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+    public ResponseEntity<Person> createPerson(@PathVariable String firstName, String lastName,  @RequestBody Person person) {
 		try {
 			personService.addPerson(person);
 		} catch (Exception e) {
-	        return new ResponseEntity<>(person, HttpStatus.NOT_MODIFIED);
+			logger.error("createPerson : la person n'a pas été créee ");
+			return ResponseEntity.notFound().build();
 		}
-        return new ResponseEntity<>(person, HttpStatus.CREATED);
+		logger.info("createPerson : réponse OK, la person est créee");
+		return ResponseEntity.ok(person);
     }
 	
 	@DeleteMapping
@@ -42,13 +47,15 @@ public class PersonController {
 	 * @param person
 	 * @return
 	 */
-    public ResponseEntity<Person> deletePerson(@RequestBody Person person) {
+    public ResponseEntity<Person> deletePerson(@PathVariable String firstName, String lastName, @RequestBody Person person) {
 		try {
 			personService.deletePerson(person);
 		} catch (Exception e) {
-	        return new ResponseEntity<>(person, HttpStatus.NOT_MODIFIED);
+			logger.error("deletePerson : la person n'a pas été supprimée ");
+			return ResponseEntity.notFound().build(); 
 		}
-        return new ResponseEntity<>(person, HttpStatus.ACCEPTED);
+		logger.info("deletePerson : réponse OK, la person est supprimée");
+		return ResponseEntity.ok(person);
     }
 	@PutMapping
 	/**
@@ -57,13 +64,15 @@ public class PersonController {
 	 * @param person
 	 * @return
 	 */
-    public ResponseEntity<Person> majPerson(@RequestBody Person person) {
+    public ResponseEntity<Person> majPerson(@PathVariable String firstName, String lastName, @RequestBody Person person) {
 		try {
 			personService.updatePerson(person);
 		} catch (Exception e) {
-	        return new ResponseEntity<>(person, HttpStatus.NOT_MODIFIED);
+			logger.error("updatePerson : la person n'a pas été mise à jour ");
+			return ResponseEntity.notFound().build();
 		}
-        return new ResponseEntity<>(person, HttpStatus.ACCEPTED);
+		logger.info("updatePerson : réponse OK, la person est mise à jour");
+		return ResponseEntity.ok(person);
     }
 
 }
