@@ -1,6 +1,7 @@
 package com.oprprojet.safetyNet.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.oprprojet.safetyNet.model.Donnees;
+import com.oprprojet.safetyNet.model.FireStation;
 import com.oprprojet.safetyNet.model.MedicalRecord;
 import com.oprprojet.safetyNet.model.Person;
 import com.oprprojet.safetyNet.repository.Reader;
@@ -16,6 +18,8 @@ import com.oprprojet.safetyNet.repository.Writer;
 
 @Service
 public class PersonService {
+	@Autowired
+	Person person;
 	@Autowired
 	private Reader reader;
 	
@@ -26,10 +30,8 @@ public class PersonService {
 	/**
 	 * Permet d'ajouter une person (stationNumber, address)
 	 */
-	//TODO faire en sorte de faire un retour sur person/fireStation/medicalRecord pour les méthodes add et update. Pas de void sur les méthodes. IL doit renvoyer la réponse. 
-    //TODO utiliser des .stream
-	//TODO Boolean personDejaExistante = personList.stream().anyMatch(personElement -> personElement.equals(person)); // équivaut à une boucle for de la ligne 40 a 47
-	public void addPerson(Person person) throws Exception {
+	
+	public Person addPerson(Person person) throws Exception {
     	logger.debug("methode addPerson : lancement de la methode");
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
@@ -49,13 +51,15 @@ public class PersonService {
 			logger.debug("methode addPerson : la Person a bien été ajoutée");
 			// Ecrire les données.
 	    	writer.jsonWriter(donneesBrute);
-	    	logger.debug("methode addPerson : fin de la methode");
-		}  	
+	    	
+		}  
+		logger.debug("methode addPerson : fin de la methode");
+		return person;
     }
     /**
      * Permet de supprimer une person avec firstName et lastName
      */
-    public void deletePerson(Person person) throws Exception {
+    public void deletePerson(String firstName, String lastName) throws Exception {
     	logger.debug("methode deletePerson : lancement de la methode");
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
@@ -64,7 +68,7 @@ public class PersonService {
     	List<Person> toRemovePerson = new ArrayList<Person>();
     	List<Person> personList = donneesBrute.getPersons();
     	for(Person personElement : personList) {
-    		if(personElement.getFirstName().equals(person.getFirstName()) && personElement.getLastName().equals(person.getLastName())) {
+    		if(personElement.getFirstName().equals(firstName) && personElement.getLastName().equals(lastName)) {
     			toRemovePerson.add(personElement);
     		}
     	}
@@ -81,37 +85,48 @@ public class PersonService {
     /**
      * Permet de modifier les informations d'une personne (sauf firstName et lastName)
      */
-    public void updatePerson (Person person) throws Exception {
+    public Person updatePerson (Person person) throws Exception {
     	logger.debug("methode updatePerson : lancement de la methode");
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
     	logger.debug("methode updatePerson : debut du traitement");
     	// modifie la person transmise.
     	List<Person> personList = donneesBrute.getPersons();
+    	Person personMisAJour = new Person();
     	for(Person personElement : personList) {
     		if(personElement.getFirstName() != person.getFirstName() && personElement.getLastName() != person.getLastName()){
     			continue;
     		} 
     		if(!person.getAddress().isEmpty()) {
     			personElement.setAddress(person.getAddress());
+    			personMisAJour.setAddress(personElement.getAddress());
     		}
     		if(!person.getCity().isEmpty()) {
     			personElement.setCity(person.getCity());
+    			personMisAJour.setCity(personElement.getCity());
     		}
     		if(!person.getEmail().isEmpty()) {
     			personElement.setEmail(person.getEmail());
     		}
     		if(!person.getPhone().isEmpty()) {
     			personElement.setPhone(person.getPhone());
+    			personMisAJour.setPhone(personElement.getPhone());
+    			personMisAJour.setEmail(personElement.getEmail());
     		}
     		if(person.getZip() > 0 ) {
     		personElement.setZip(person.getZip());
+    		personMisAJour.setZip(personElement.getZip());
     		}
+
+    		personMisAJour.setFirstName(personElement.getFirstName());
+    		personMisAJour.setLastName(personElement.getLastName());
     		logger.debug("la person a bien été modifiée");
     	} 
     	
     	// Ecrire les données.
     	writer.jsonWriter(donneesBrute);
     	logger.debug("methode updatePerson : fin de la methode");
+    	return personMisAJour;
+    	
     }
 }

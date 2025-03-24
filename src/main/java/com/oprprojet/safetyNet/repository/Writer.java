@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.oprprojet.safetyNet.model.Donnees;
-
+@Component
 @Repository
 public class Writer {
 	private static final Logger logger = LogManager.getLogger(Writer.class);

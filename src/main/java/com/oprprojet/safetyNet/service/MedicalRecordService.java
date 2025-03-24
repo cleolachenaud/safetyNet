@@ -1,12 +1,14 @@
 package com.oprprojet.safetyNet.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.oprprojet.safetyNet.model.Donnees;
 import com.oprprojet.safetyNet.model.FireStation;
@@ -16,6 +18,9 @@ import com.oprprojet.safetyNet.repository.Writer;
 
 @Service
 public class MedicalRecordService {
+	@Autowired
+	MedicalRecord medicalRecord;
+	
 	@Autowired
 	private Reader reader;
 	
@@ -28,7 +33,7 @@ public class MedicalRecordService {
 	/**
 	 * Permet d'ajouter un medicalRecord
 	 */
-    public void addMedicalRecord(MedicalRecord medicalRecord) throws Exception {
+    public MedicalRecord addMedicalRecord(MedicalRecord medicalRecord) throws Exception {
     	logger.debug("methode addMedicalRecord : lancement de la methode");
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
@@ -50,12 +55,13 @@ public class MedicalRecordService {
 			// Ecrire les données.
 	    	writer.jsonWriter(donneesBrute);
 	    	logger.debug("methode addMedicalRecord : fin de la methode");
-		}  	
+		} 
+		return medicalRecord;
     }
     /**
      * Permet de supprimer un medicalRecord selon le firstName lastName
      */
-    public void deleteMedicalRecord(MedicalRecord medicalRecord) throws Exception {
+    public void deleteMedicalRecord(String firstName, String lastName) throws Exception {
     	logger.debug("methode deleteMedicalRecord : lancement de la methode");
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
@@ -64,7 +70,7 @@ public class MedicalRecordService {
     	List<MedicalRecord> toRemoveMedicalRecord = new ArrayList<MedicalRecord>();
     	List<MedicalRecord> medicalRecordList = donneesBrute.getMedicalRecords();
     	for(MedicalRecord medicalRecordElement : medicalRecordList) {
-    		if(medicalRecordElement.getFirstName().equals(medicalRecord.getFirstName()) && medicalRecordElement.getLastName().equals(medicalRecord.getLastName())) {    	   
+    		if(medicalRecordElement.getFirstName().equals(firstName) && medicalRecordElement.getLastName().equals(lastName)) {    	   
     			toRemoveMedicalRecord.add(medicalRecordElement);
     		}
     	}
@@ -81,28 +87,40 @@ public class MedicalRecordService {
     /**
      * Permet de modifier le medicalRecord selon le firstName lastName
      */
-    public void updateMedicalRecord (MedicalRecord medicalRecord) throws Exception {
+    public MedicalRecord updateMedicalRecord (MedicalRecord medicalRecord) throws Exception {
     	logger.debug("methode updateMedicalRecord : lancement de la methode");
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
     	logger.debug("methode updateMedicalRecord : debut du traitement");
     	// modifie la stationNumber transmise.
+    	MedicalRecord medicalRecordMisAJour = new MedicalRecord();
     	List<MedicalRecord> medicalRecordList = donneesBrute.getMedicalRecords();
     	for(MedicalRecord medicalRecordElement : medicalRecordList) {
     		if(!medicalRecordElement.getFirstName().equals(medicalRecord.getFirstName()) && !medicalRecordElement.getLastName().equals(medicalRecord.getLastName())){
     			continue;
     		}
-
+    	// modifie birthdate / allergies / medications uniquement si ces infos sont passées en paramètres. 
+    	// Dans le cas contraire on garde les infos déjà présentes sur l'élément
     	if(medicalRecord.getBirthdate() !=null) {
     		medicalRecordElement.setBirthdate(medicalRecord.getBirthdate());
+    		medicalRecordMisAJour.setBirthdate(medicalRecordElement.getBirthdate());
     	}
-    	medicalRecordElement.setAllergies(medicalRecord.getAllergies());
-    	medicalRecordElement.setMedications(medicalRecord.getMedications());
+    	if(medicalRecord.getAllergies()!=null) {
+    		medicalRecordElement.setAllergies(medicalRecord.getAllergies());
+    		medicalRecordMisAJour.setAllergies(medicalRecordElement.getAllergies());
+    	}
+    	if(medicalRecord.getMedications()!=null) {
+    		medicalRecordElement.setMedications(medicalRecord.getMedications());
+    		medicalRecordMisAJour.setMedications(medicalRecordElement.getMedications());
+    	}
+    	medicalRecordMisAJour.setFirstName(medicalRecordElement.getFirstName());
+    	medicalRecordMisAJour.setLastName(medicalRecordElement.getLastName());
     	logger.debug("le MedicalRecord a bien été modifié");
     	} 
     	
     	// Ecrire les données.
     	writer.jsonWriter(donneesBrute);
     	logger.debug("methode updateMedicalRecord : fin de la methode");
+    	return medicalRecordMisAJour;
     }
 }

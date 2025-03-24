@@ -21,9 +21,9 @@ import com.oprprojet.safetyNet.repository.Writer;
 
 @Service
 public class FireStationService {
+	@Autowired
+	FireStation fireStation;
 	
-
-
 	@Autowired
 	private Reader reader;
 	
@@ -35,6 +35,7 @@ public class FireStationService {
 	/**
 	 * Permet d'ajouter une FireStation (stationNumber, address)
 	 */
+	  
     public FireStation addFireStation(FireStation fireStation) throws Exception {
     	logger.debug("methode addFireStation : lancement de la methode");
     	// Lire les données
@@ -55,18 +56,20 @@ public class FireStationService {
 	    	logger.debug("methode addFireStation : la FireStation a bien été ajoutée");
 			// Ecrire les données.
 	    	writer.jsonWriter(donneesBrute);
-	    	return fireStation;
+	    	
 		} 
 		logger.debug("methode addFireStation : fin de la methode");
-		return null;
+		return fireStation;
     }
     /**
      * Permet de supprimer une FireStation selon l'address ou la stationNumber 
      */
+
     public void deleteFireStation(FireStation fireStation) throws Exception {
        	logger.debug("methode deleteFireStation : lancement de la methode");
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
+    	
     	logger.debug("methode deleteFireStation : debut du traitement");
     	// Supprimer la fireStation transmise.
     	List<FireStation> toRemoveFireStation = new ArrayList<FireStation>();
@@ -113,4 +116,5 @@ public class FireStationService {
     	logger.debug("methode updateFireStation : fin de la methode");
     	return fireStationMiseAJour;
     }
+    
 }

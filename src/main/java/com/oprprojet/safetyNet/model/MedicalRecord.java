@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
+@Component
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonFilter("MedicalRecordJsonFilter") 
@@ -32,9 +35,9 @@ public class MedicalRecord {
 	 * @return
 	 */
     @JsonIgnore
-	public int getAge() {
+	public Integer getAge() {
 		LocalDate dateNaissance = LocalDate.ofInstant(this.birthdate.toInstant(), ZoneId.systemDefault());
-		int age = Period.between(dateNaissance, LocalDate.now()).getYears();
+		Integer age = Period.between(dateNaissance, LocalDate.now()).getYears();
 		return age;
 	}
 

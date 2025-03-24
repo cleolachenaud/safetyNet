@@ -9,6 +9,9 @@ import static org.mockito.Mockito.verify;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -78,8 +81,8 @@ public class DonneesLieesServiceTest {
 		Date birthdate5 = createBirthdate("1922-05-29");
 		Person person5 = new Person("Steve", "Paddatwo", "15 rue des pissenlits", "paddaVille", 37100, "822-894-7462", "steve@email.com");
 		FireStation station3 = new FireStation("15 rue des pissenlits", 3);
-		MedicalRecord medicalRecord5 = new MedicalRecord("Steve", "Paddatwo", birthdate5, List.of(""), List.of("", ""));
-		
+		MedicalRecord medicalRecord5 = new MedicalRecord("Steve", "Paddatwo", birthdate5, List.of(""), List.of(""));
+	
 		// Créer les listes personList, medicalRecordList et fireStationList
 		List<Person> personList = new ArrayList<Person>();
 		List<FireStation> fireStationList = new ArrayList<FireStation>();
@@ -112,172 +115,304 @@ public class DonneesLieesServiceTest {
 	@Test
 	public void getFireStationStationNumberTest() throws Exception {
 		String erreurLoggee = "";
-		DonneesLieesService donneesLieesServiceLocal = null;
+		Map<String, Object> reponse = null;
 	
 		// Appelez la méthode d'ajout	
 		try {
-			donneesLieesServiceLocal = donneesLieesService.getFireStationStationNumber(1);
+			reponse = donneesLieesService.getFireStationStationNumber(1);
 		} catch (Exception e) {
 			erreurLoggee = e.toString();
 			e.printStackTrace(System.out);
 		}
-	
+		Map<String, Object> mapAttendue = Map.of(
+				DonneesLieesService.NOMBREENFANT, 2,
+				DonneesLieesService.NOMBREADULTE, 1,
+				DonneesLieesService.LISTEPERSONNE, List.of(
+				Map.of(
+						DonneesLieesService.FIRSTNAME, "Appa",
+						DonneesLieesService.LASTNAME, "Paddaone",
+						DonneesLieesService.ADDRESS, "36 rue des paddas",
+						DonneesLieesService.PHONE, "841-874-7462"
+					),
+				Map.of(
+						DonneesLieesService.FIRSTNAME, "Moja",
+						DonneesLieesService.LASTNAME, "Paddatwo",
+						DonneesLieesService.ADDRESS, "36 rue des paddas",
+						DonneesLieesService.PHONE, "843-894-7462"
+					),
+				Map.of(
+						DonneesLieesService.FIRSTNAME, "John",
+						DonneesLieesService.LASTNAME, "Paddaone",
+						DonneesLieesService.ADDRESS, "36 rue des paddas",
+						DonneesLieesService.PHONE, "811-874-7462"
+					
+						)
+				));
 		// Vérifiez que l'ajout s'est bien passé
-	  
+
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-		
-		assertEquals("la liste de personnes doit être égale à 3", 3, donneesLieesServiceLocal.getListPerson().size());
-		assertEquals("la liste d'enfant doit être égale à 2", 2, donneesLieesServiceLocal.getNombreEnfants());
-		assertEquals("la liste d'adulte doit être égale à 1", 1, donneesLieesServiceLocal.getNombreAdultes());
-	}
+		assertEquals("Les données retournées doivent être identiques à l'attendu", mapAttendue, reponse);
+	}	
 
 	@Test
 	public void getChildAlertAddressTest() throws Exception {
 		String erreurLoggee = "";
-		DonneesLieesService donneesLieesServiceLocal = null;
+		Map<String, Object> reponse = null;
 	
 		// Appelez la méthode d'ajout	
 		try {
-			donneesLieesServiceLocal = donneesLieesService.getChildAlertAddress("36 rue des paddas");
+			reponse = donneesLieesService.getChildAlertAddress("36 rue des paddas");
 		} catch (Exception e) {
 			erreurLoggee = e.toString() + e.getStackTrace();
 			e.printStackTrace(System.out);
 		}
 	
 		// Vérifiez que l'ajout s'est bien passé
-	  
+			
+		Map<String, Object> mapAttendue = Map.of(
+				DonneesLieesService.NOMBREENFANT, 2,
+				DonneesLieesService.NOMBREADULTE, 1,
+				DonneesLieesService.ENFANTS, List.of(
+						Map.of(
+								DonneesLieesService.FIRSTNAME, "Appa",
+								DonneesLieesService.LASTNAME, "Paddaone",
+								DonneesLieesService.AGE, age(createBirthdate("2021-04-14")).toString()
+							),
+						Map.of(
+								DonneesLieesService.FIRSTNAME, "Moja",
+								DonneesLieesService.LASTNAME, "Paddatwo",
+								DonneesLieesService.AGE, age(createBirthdate("2021-05-19")).toString()
+							)
+					),
+				DonneesLieesService.FOYER, List.of(
+						Map.of(
+								DonneesLieesService.FIRSTNAME, "John",
+								DonneesLieesService.LASTNAME, "Paddaone"
+							)
+					)
+			);
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-	
-		assertEquals("la liste d'enfants doit être égale à 2", 2, donneesLieesServiceLocal.getEnfantMap().size());
-		assertEquals("la liste d'adulte doit être égale à 1", 1, donneesLieesServiceLocal.getListPerson().size());
-	  
+		assertEquals("Les données retournées doivent être identiques à l'attendu", mapAttendue, reponse);
 	}	
 
 	@Test
 	public void getPhoneAlerteFireStationTest() throws Exception {
 		String erreurLoggee = "";
-		DonneesLieesService donneesLieesServiceLocal = null;
+		Map<String, Object> reponse = null;
 	
 		// Appelez la méthode d'ajout	
 		try {
-			donneesLieesServiceLocal = donneesLieesService.getPhoneAlerteFireStation(1);
+			reponse = donneesLieesService.getPhoneAlerteFireStation(1);
 		} catch (Exception e) {
 			erreurLoggee = e.toString() + e.getStackTrace();
 			e.printStackTrace(System.out);
 		}
 	
+		Map<String, Object> mapAttendue = Map.of(
+				DonneesLieesService.LISTEPHONE, List.of(
+				Map.of(
+						DonneesLieesService.PHONE, "841-874-7462"
+					),
+				Map.of(
+						DonneesLieesService.PHONE, "843-894-7462"
+					),
+				Map.of(
+						DonneesLieesService.PHONE, "811-874-7462"
+					
+						)
+				));
 		// Vérifiez que l'ajout s'est bien passé
-	  
+
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-		
-		assertEquals("la liste doit être égale à 3", 3, donneesLieesServiceLocal.getListPerson().size());
-		assertEquals("le 1er numéro de la liste doit être égal à 841-874-7462 ", "841-874-7462", donneesLieesServiceLocal.getListPerson().get(0).getPhone());
-		assertEquals("le 2e numéro de la liste doit être égal à 843-894-7462 ", "843-894-7462", donneesLieesServiceLocal.getListPerson().get(1).getPhone());
-		assertEquals("le 3e numéro de la liste doit être égal à 811-874-7462 ", "811-874-7462", donneesLieesServiceLocal.getListPerson().get(2).getPhone());
-	  
+		assertEquals("Les données retournées doivent être identiques à l'attendu", mapAttendue, reponse);
 	}	
 	
 	@Test
 	public void getFireAddressTest() throws Exception {
 		String erreurLoggee = "";
-		DonneesLieesService donneesLieesServiceLocal = null;
+		Map<String, Object> reponse = null;
 	
 		// Appelez la méthode d'ajout	
 		try {
-			donneesLieesServiceLocal = donneesLieesService.getFireAddress("36 rue des paddas");
+			reponse = donneesLieesService.getFireAddress("36 rue des paddas");
 		} catch (Exception e) {
-			erreurLoggee = e.toString() + e.getStackTrace();
+			erreurLoggee = e.toString();
 			e.printStackTrace(System.out);
 		}
-	
+		Map<String, Object> mapAttendue = Map.of(
+				DonneesLieesService.STATIONNUMBER, 1,
+				DonneesLieesService.LISTEPERSONNE, List.of(
+				Map.of(
+						DonneesLieesService.FIRSTNAME, "Appa",
+						DonneesLieesService.PHONE, "841-874-7462",
+						DonneesLieesService.LASTNAME, "Paddaone",
+						DonneesLieesService.MEDICAMENTS, List.of("baytril"),
+						DonneesLieesService.AGE, age(createBirthdate("2021-04-14")).toString(),
+						DonneesLieesService.ALLERGIES, List.of("avocat")
+					),
+				Map.of(
+						DonneesLieesService.FIRSTNAME, "Moja",
+						DonneesLieesService.PHONE, "843-894-7462",
+						DonneesLieesService.LASTNAME, "Paddatwo",
+						DonneesLieesService.MEDICAMENTS, List.of(""), 
+						DonneesLieesService.AGE, age(createBirthdate("2021-05-19")).toString(),
+						DonneesLieesService.ALLERGIES, List.of("avocat", "chocolat")
+					),
+				Map.of(
+						DonneesLieesService.FIRSTNAME, "John",
+						DonneesLieesService.PHONE, "811-874-7462",
+						DonneesLieesService.LASTNAME, "Paddaone",
+						DonneesLieesService.MEDICAMENTS, List.of(""), 
+						DonneesLieesService.AGE, age(createBirthdate("1960-02-23")).toString(),
+						DonneesLieesService.ALLERGIES, List.of("")
+					
+						)
+				));
 		// Vérifiez que l'ajout s'est bien passé
-		
-		// je créee un objet "miroir" à l'image de ce que doit me retourner la méthode pour pouvoir la comparer dans mon assert
-		List<MedicalRecord> medicalRecordList3 = new ArrayList<MedicalRecord>();
-		Date birthdate3 = createBirthdate("2021-05-19");
-		Person person3 = new Person("Moja", "Paddatwo", "36 rue des paddas", "paddaVille", 37100, "843-894-7462", "moja@email.com");
-		MedicalRecord medicalRecord3 = new MedicalRecord("Moja", "Paddatwo", birthdate3, List.of(""), List.of("avocat", "chocolat"));
-		Map<Person, List<MedicalRecord>> mapTest = createMapPersonMedicalRecordList();
-		medicalRecordList3.add(medicalRecord3);
-		mapTest.put(person3, medicalRecordList3);
-	  
+
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-		assertEquals ("les informations doivent être identiques dans les deux maps", mapTest, donneesLieesServiceLocal.getPersonMedicalRecordMap());
-	}
-	
+		assertEquals("Les données retournées doivent être identiques à l'attendu", mapAttendue, reponse);
+	}	
+
+
 	@Test
 	public void getFloodStationsTest() throws Exception {
 		String erreurLoggee = "";
-		DonneesLieesService donneesLieesServiceLocal = null;
+		Map<String, Object> reponse = null;
 	
 		// Appelez la méthode d'ajout	
 		try {
-			donneesLieesServiceLocal = donneesLieesService.getFloodStations(1);
+			reponse = donneesLieesService.getFloodStations(List.of(1,2));
 		} catch (Exception e) {
-			erreurLoggee = e.toString() + e.getStackTrace();
+			erreurLoggee = e.toString();
 			e.printStackTrace(System.out);
 		}
-	
+		Map<String, Object> mapAttendue = Map.of(
+			DonneesLieesService.FOYER, List.of(
+				Map.of(
+					DonneesLieesService.LISTEPERSONNE, List.of(
+						Map.of(		
+							DonneesLieesService.FIRSTNAME, "Appa",
+							DonneesLieesService.PHONE, "841-874-7462",
+							DonneesLieesService.LASTNAME, "Paddaone",
+							DonneesLieesService.MEDICAMENTS, List.of("baytril"),
+							DonneesLieesService.AGE, age(createBirthdate("2021-04-14")).toString(),
+							DonneesLieesService.ALLERGIES, List.of("avocat")
+						),
+						Map.of(
+							DonneesLieesService.FIRSTNAME, "Moja",
+							DonneesLieesService.PHONE, "843-894-7462",
+							DonneesLieesService.LASTNAME, "Paddatwo",
+							DonneesLieesService.MEDICAMENTS, List.of(""), 
+							DonneesLieesService.AGE, age(createBirthdate("2021-05-19")).toString(),
+							DonneesLieesService.ALLERGIES, List.of("avocat", "chocolat")
+						),
+						Map.of(
+							DonneesLieesService.FIRSTNAME, "John",
+							DonneesLieesService.PHONE, "811-874-7462",
+							DonneesLieesService.LASTNAME, "Paddaone",
+							DonneesLieesService.MEDICAMENTS, List.of(""), 
+							DonneesLieesService.AGE, age(createBirthdate("1960-02-23")).toString(),
+							DonneesLieesService.ALLERGIES, List.of("")	
+						)
+					)
+				),
+				Map.of(
+					DonneesLieesService.LISTEPERSONNE, List.of(
+						Map.of(
+							DonneesLieesService.FIRSTNAME, "Marley",
+							DonneesLieesService.PHONE, "561-094-3928",
+							DonneesLieesService.LASTNAME, "Paddathree",
+							DonneesLieesService.MEDICAMENTS, List.of(""), 
+							DonneesLieesService.AGE, age(createBirthdate("2021-06-21")).toString(),
+							DonneesLieesService.ALLERGIES, List.of("avocat")
+						)
+					)
+				)
+			)
+		);
 		// Vérifiez que l'ajout s'est bien passé
-		// je créee un objet "miroir" à l'image de ce que doit me retourner la méthode pour pouvoir la comparer dans mon assert
-		List<MedicalRecord> medicalRecordList3 = new ArrayList<MedicalRecord>();
-		Date birthdate3 = createBirthdate("2021-05-19");
-		Person person3 = new Person("Moja", "Paddatwo", "36 rue des paddas", "paddaVille", 37100, "843-894-7462", "moja@email.com");
-		MedicalRecord medicalRecord3 = new MedicalRecord("Moja", "Paddatwo", birthdate3, List.of(""), List.of("avocat", "chocolat"));
-		Map<Person, List<MedicalRecord>> mapTest = createMapPersonMedicalRecordList();
-		medicalRecordList3.add(medicalRecord3);
-		mapTest.put(person3, medicalRecordList3);
-		
-		Map<String, Map<Person, List<MedicalRecord>>> floodStationsMapTest = new HashMap<>();
-		floodStationsMapTest.put("36 rue des paddas", mapTest);
-		
+
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-		assertEquals ("les informations doivent être identiques dans les deux maps", floodStationsMapTest, donneesLieesServiceLocal.getFloodStationsMap());
-	} 
+		assertEquals("Les données retournées doivent être identiques à l'attendu", mapAttendue, reponse);
+	}
+	
+	
 	
 	@Test
 	public void getPersonInfoLastNameTest() throws Exception {
 		String erreurLoggee = "";
-		DonneesLieesService donneesLieesServiceLocal = null;
+		Map<String, Object> reponse = null;
 	
 		// Appelez la méthode d'ajout	
 		try {
-			donneesLieesServiceLocal = donneesLieesService.getPersonInfoLastName("Paddaone");
+			reponse = donneesLieesService.getPersonInfoLastName("Paddaone");
 		} catch (Exception e) {
-			erreurLoggee = e.toString() + e.getStackTrace();
+			erreurLoggee = e.toString();
 			e.printStackTrace(System.out);
 		}
-	
+		Map<String, Object> mapAttendue = Map.of(
+				DonneesLieesService.LISTEPERSONNE, List.of(
+				Map.of(
+						
+						DonneesLieesService.ADDRESS, "36 rue des paddas",
+						DonneesLieesService.LASTNAME, "Paddaone",
+						DonneesLieesService.FIRSTNAME, "Appa",
+						DonneesLieesService.EMAIL, "appa@email.com",
+						DonneesLieesService.MEDICAMENTS, List.of("baytril"),
+						DonneesLieesService.AGE, age(createBirthdate("2021-04-14")).toString(),
+						DonneesLieesService.ALLERGIES, List.of("avocat")
+					),
+				Map.of(
+						DonneesLieesService.ADDRESS, "36 rue des paddas",
+						DonneesLieesService.LASTNAME, "Paddaone",
+						DonneesLieesService.FIRSTNAME, "John",
+						DonneesLieesService.EMAIL, "john@email.com",
+						DonneesLieesService.MEDICAMENTS, List.of(""), 
+						DonneesLieesService.AGE, age(createBirthdate("1960-02-23")).toString(),
+						DonneesLieesService.ALLERGIES, List.of("")
+					
+						)
+				));
 		// Vérifiez que l'ajout s'est bien passé
-		// je créee un objet "miroir" à l'image de ce que doit me retourner la méthode pour pouvoir la comparer dans mon assert
-		Map<Person, List<MedicalRecord>> mapTest = createMapPersonMedicalRecordList();
-		
-		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
 
-		assertEquals ("les informations doivent être identiques dans les deux maps", mapTest, donneesLieesServiceLocal.getPersonMedicalRecordMap());
-	}
+		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
+		assertEquals("Les données retournées doivent être identiques à l'attendu", mapAttendue, reponse);
+	}	
 	
 	@Test
 	public void getCommunityEmailTest() throws Exception {
 		String erreurLoggee = "";
-		DonneesLieesService donneesLieesServiceLocal = null;
+		Map<String, Object> reponse = null;
 	
 		// Appelez la méthode d'ajout	
 		try {
-			donneesLieesServiceLocal = donneesLieesService.getCommunityEmail("paddaVille");
+			reponse = donneesLieesService.getCommunityEmail("paddaVille");
 		} catch (Exception e) {
 			erreurLoggee = e.toString();
 			e.printStackTrace(System.out);
 		}
 	
+		Map<String, Object> mapAttendue = Map.of(
+				DonneesLieesService.LISTEMAIL, List.of(
+				Map.of(
+						DonneesLieesService.EMAIL, "appa@email.com"
+					),
+				Map.of(
+						DonneesLieesService.EMAIL, "steve@email.com"
+					),
+				Map.of(
+						DonneesLieesService.EMAIL, "moja@email.com"
+					),
+				Map.of(
+						DonneesLieesService.EMAIL, "john@email.com"
+					
+						)
+				));
 		// Vérifiez que l'ajout s'est bien passé
+
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-		
-		assertEquals("la liste de personnes doit être égale à 4", 4, donneesLieesServiceLocal.getListPerson().size());
-		assertEquals("le 1er mail de la liste doit être égal à appa@email.com ", "appa@email.com", donneesLieesServiceLocal.getListPerson().get(0).getEmail());
-		assertEquals("le 2e mail de la liste doit être égal à steve@email.com ", "steve@email.com", donneesLieesServiceLocal.getListPerson().get(1).getEmail());
-		assertEquals("le 3e mail de la liste doit être égal à moja@email.com ", "moja@email.com", donneesLieesServiceLocal.getListPerson().get(2).getEmail());
-		assertEquals("le 4e mail de la liste doit être égal à john@email.com ", "john@email.com", donneesLieesServiceLocal.getListPerson().get(3).getEmail());
+		assertEquals("Les données retournées doivent être identiques à l'attendu", mapAttendue, reponse);
 	}
 	
 	
@@ -288,6 +423,11 @@ public class DonneesLieesServiceTest {
          Date birthdateDate = simpleDateFormat.parse(birthdate);
          return birthdateDate;
     }
+	 private Integer age (Date birthdateDate) {
+			LocalDate localDateNaissance = LocalDate.ofInstant(birthdateDate.toInstant(), ZoneId.systemDefault());
+			Integer age = Period.between(localDateNaissance, LocalDate.now()).getYears();
+			return age;
+	 }
     
 	private Map<Person, List<MedicalRecord>> createMapPersonMedicalRecordList() throws ParseException{
 		List<MedicalRecord> medicalRecordList = new ArrayList<MedicalRecord>();

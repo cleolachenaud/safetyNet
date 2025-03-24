@@ -52,7 +52,6 @@ public class FireStationServiceTest {
     ArgumentCaptor<Donnees> argumentCaptorDonnees;
     
     
-    
     @BeforeEach
     public void setUp() throws Exception {
     	
@@ -81,15 +80,18 @@ public class FireStationServiceTest {
         FireStation station7 = new FireStation("address7", 7);
         
      	try {
-     		fireStationService.addFireStation(station7);
+     		fireStationService.addFireStation(new FireStation("address7", 7));
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
+     		e.printStackTrace();
      	}
 
         // Vérifiez que l'ajout s'est bien passé
+     	
         Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-        assertEquals("la liste de données doit être égale à 3", 3, argumentCaptorDonnees.getValue().getFireStations().size());
+		
+		assertEquals("la liste de données doit être égale à 3", 3, argumentCaptorDonnees.getValue().getFireStations().size());
         assertEquals("les éléments de la variable station doivent être identiques à ceux capturées par le mock", station7, argumentCaptorDonnees.getValue().getFireStations().get(2));
     }
    
@@ -101,10 +103,11 @@ public class FireStationServiceTest {
         FireStation station6 = new FireStation("address6", 6);
         
      	try {
-     		fireStationService.updateFireStation(station6);
+     		fireStationService.updateFireStation(new FireStation("address6", 6));
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
-     	}
+     		e.printStackTrace();
+     		}
 
         // Vérifiez que l'ajout s'est bien passé
         Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
@@ -121,14 +124,15 @@ public class FireStationServiceTest {
         FireStation station6 = new FireStation("address6", 6);
         
      	try {
-     		fireStationService.deleteFireStation(station6);
+     		fireStationService.deleteFireStation(new FireStation("address6", 6));
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
+     		e.printStackTrace();
      	}
 
         // Vérifiez que l'ajout s'est bien passé
         Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
-        assertEquals("la liste de données doit être égale à 1", 1, argumentCaptorDonnees.getValue().getFireStations().size());
+		assertEquals("la liste de données doit être égale à 1", 1, argumentCaptorDonnees.getValue().getFireStations().size());
     }
 }

@@ -87,7 +87,7 @@ public class MedicalRecordServiceTest {
     	Date birthdate = createBirthdate("2021-06-21");
     	MedicalRecord medicalRecord3 = new MedicalRecord("Marley", "Paddathree", birthdate, List.of(""), List.of("avocat"));
      	try {
-     		medicalRecordService.addMedicalRecord(medicalRecord3);
+     		medicalRecordService.addMedicalRecord(new MedicalRecord("Marley", "Paddathree", birthdate, List.of(""), List.of("avocat")));
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
      	}
@@ -108,7 +108,7 @@ public class MedicalRecordServiceTest {
     	MedicalRecord medicalRecord1 = new MedicalRecord("Appa", "Paddaone", birthdate, List.of("baytril"), List.of("avocat"));
     	
      	try {
-     		medicalRecordService.updateMedicalRecord(medicalRecord1);
+     		medicalRecordService.updateMedicalRecord(new MedicalRecord("Appa", "Paddaone", birthdate, List.of("baytril"), List.of("avocat")));
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
      	}
@@ -125,10 +125,9 @@ public class MedicalRecordServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-        MedicalRecord medicalRecord1 = new MedicalRecord("Moja", "Paddatwo", null, List.of("",""), List.of("",""));
-        
+                
      	try {
-     		medicalRecordService.deleteMedicalRecord(medicalRecord1);
+     		medicalRecordService.deleteMedicalRecord("Moja", "Paddatwo");
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
      	}

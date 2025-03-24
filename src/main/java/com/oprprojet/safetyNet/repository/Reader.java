@@ -6,13 +6,16 @@ import java.text.SimpleDateFormat;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oprprojet.safetyNet.model.Donnees;
+
+@Component
 @Repository
 public class Reader {
-	public final static String NOM_FICHIER_JSON = "C:\\Users\\cleol\\Desktop\\PROJET5\\safetyNet\\data.json";
+	public final static String NOM_FICHIER_JSON = "data.json";
 	private static final Logger logger = LogManager.getLogger(Writer.class);
 
 	public Donnees jsonReader() throws Exception {

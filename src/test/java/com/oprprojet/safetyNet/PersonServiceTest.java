@@ -88,9 +88,10 @@ public class PersonServiceTest {
      	// Appelez la méthode d'ajout
     	Person person3 = new Person("Marley", "Paddathree", "12 rue des gloutons", "paddaVille", 37100, "561-094-3928", "marley@email.com");
      	try {
-     		personService.addPerson(person3);
+     		personService.addPerson(new Person ("Marley", "Paddathree", "12 rue des gloutons", "paddaVille", 37100, "561-094-3928", "marley@email.com"));
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
+     		e.printStackTrace();
      	}
 
         // Vérifiez que l'ajout s'est bien passé
@@ -107,9 +108,10 @@ public class PersonServiceTest {
      	// Appelez la méthode d'ajout
     	Person person1 = new Person("Appa", "Paddaone", "36 rue des paddas", "paddaVille", 37100, "841-874-7462", "appa@email.com");
      	try {
-     		personService.updatePerson(person1);
+     		personService.updatePerson(new Person("Appa", "Paddaone", "36 rue des paddas", "paddaVille", 37100, "841-874-7462", "appa@email.com"));
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
+     		e.printStackTrace();
      	}
 
         // Vérifiez que l'ajout s'est bien passé
@@ -124,16 +126,15 @@ public class PersonServiceTest {
     	String erreurLoggee = "";
 
      	// Appelez la méthode d'ajout
-    	Person person1 = new Person("Appa", "Paddaone", null, null, 0, null, null);
-
-     	try {
-     		personService.deletePerson(person1);
+    	try {
+     		personService.deletePerson("Appa", "Paddaone");
      	} catch (Exception e) {
      		erreurLoggee = e.toString();
+     		e.printStackTrace();
      	}
 
         // Vérifiez que l'ajout s'est bien passé
-        Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
+    	Mockito.verify(jsonWriterMock).jsonWriter(argumentCaptorDonnees.capture());
 		assertEquals("IL n'y a pas eu d'erreur", "", erreurLoggee);
         assertEquals("la liste de données doit être égale à 1", 1, argumentCaptorDonnees.getValue().getPersons().size());
     }

@@ -19,7 +19,9 @@ import com.oprprojet.safetyNet.service.FireStationService;
 @RestController
 @RequestMapping("/firestation")
 public class FireStationController {
-	 private static final Logger logger = LogManager.getLogger(FireStationController.class);
+	private static final Logger logger = LogManager.getLogger(FireStationController.class);
+	@Autowired 
+	FireStation fireStationReponse;
 	@Autowired
 	FireStationService fireStationService;
 
@@ -29,15 +31,17 @@ public class FireStationController {
 	 * @param fireStation
 	 * @return
 	 */
-    public ResponseEntity<FireStation> createFireStation(@PathVariable int stationNumber, String address, @RequestBody FireStation fireStation) {
+    public ResponseEntity<FireStation> createFireStation(@PathVariable String address, int stationNumber) {
+		FireStation fireStationReponse;
 		try {
-			fireStationService.addFireStation(fireStation);
+			fireStationReponse = fireStationService.addFireStation(new FireStation(address, stationNumber));
+		 
 		} catch (Exception e) {
 			logger.error("createFireStation : la fireStation n'a pas été créee ");
 			return ResponseEntity.notFound().build();
 		}
 		logger.info("createFireStation : réponse OK, la fireStation est créee");
-		return ResponseEntity.ok(fireStation);
+		return ResponseEntity.ok(fireStationReponse);
       
     }
 	
@@ -47,16 +51,15 @@ public class FireStationController {
 	 * @param fireStation
 	 * @return
 	 */
-    public ResponseEntity<FireStation> deleteFireStation(@PathVariable int stationNumber, String address, @RequestBody FireStation fireStation ) { 
-		
+    public ResponseEntity<FireStation> deleteFireStation(@PathVariable String address, int stationNumber) { 
 		try {
-			fireStationService.deleteFireStation(fireStation);
+			fireStationService.deleteFireStation(new FireStation(address, stationNumber));
 		} catch (Exception e) {
 			logger.error("deleteFireStation : la fireStation n'a pas été supprimée ");
 			return ResponseEntity.notFound().build(); 
 		}
 		logger.info("deleteFireStation : réponse OK, la fireStation est supprimée");
-		return ResponseEntity.ok(fireStation);
+		return ResponseEntity.ok(null);
          
     }
 	@PutMapping
@@ -65,15 +68,16 @@ public class FireStationController {
 	 * @param fireStation
 	 * @return
 	 */
-    public ResponseEntity<FireStation> majFireStation(@PathVariable int stationNumber, String address, @RequestBody FireStation fireStation) {
+    public ResponseEntity<FireStation> majFireStation(@PathVariable String address, int stationNumber) {
+		FireStation fireStationReponse;
 		try {
-			fireStationService.updateFireStation(fireStation);
+			fireStationReponse = fireStationService.updateFireStation(new FireStation(address, stationNumber));
 		} catch (Exception e) {
 			logger.error("updateFireStation : la fireStation n'a pas été mise à jour ");
 			return ResponseEntity.notFound().build();
 		}
 		logger.info("updateFireStation : réponse OK, la fireStation est mise à jour");
-		return ResponseEntity.ok(fireStation);
+		return ResponseEntity.ok(fireStationReponse);
     }
-	
+
 }
