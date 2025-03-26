@@ -7,6 +7,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,23 +34,19 @@ public class DonneesLieesController {
  * @throws Exception
  */
 	@GetMapping("/firestation/{stationNumber}")
-    public String fireStationStationNumber(@PathVariable(required = true, name = "stationNumber") int stationNumber) throws Exception {
-		logger.debug("lancement fireStationStationNumber URL ");
-		Map<String, Object> reponse = donneesLieesService.getFireStationStationNumber(stationNumber);
+    public ResponseEntity <String> fireStationStationNumber(@PathVariable(required = true, name = "stationNumber") int stationNumber) throws Exception {
+		logger.debug("lancement fireStationStationNumber URL avec la stationNumber : {}", stationNumber);
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-		//String[] champsConsideresPersonJsonFilter = new String[] {"firstName", "lastName", "address", "phone"};
-		//FilterProvider filterProvider = new SimpleFilterProvider()
-			//	.addFilter("PersonJsonFilter", SimpleBeanPropertyFilter.filterOutAllExcept(champsConsideresPersonJsonFilter));
 	    try {
-	    	logger.info("reponse OK fireStationStationNumber URL ");
-			String reponseString = mapper.writer()
-					.writeValueAsString(reponse);
-			return reponseString;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	    logger.error("reponse KO fireStationStationNumber URL ");
-	    return "Error";
+	    	Map<String, Object> reponse = donneesLieesService.getFireStationStationNumber(stationNumber);
+	        String reponseString = mapper.writeValueAsString(reponse); // Conversion avec indentation
+	        logger.info("Réponse OK FireStationStationNumber ");
+	        return ResponseEntity.ok(reponseString); // Retourne le JSON indenté
+	    } catch (Exception e) {
+	        logger.error("Erreur lors de l'appel à getFireStationStationNumber : {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("{\"error\": \"Une erreur est survenue.\"}");
+	    }
 	}
 /**
  * Controller de l'url childAlert	
@@ -57,20 +55,19 @@ public class DonneesLieesController {
  * @throws Exception
  */	
 	@GetMapping("/childAlert/{address}")
-	public String childAlertAddress (@PathVariable(required = true, name = "address") String address) throws Exception {
-		logger.debug("lancement chilAlertAddress URL ");
-		Map<String, Object> reponse = donneesLieesService.getChildAlertAddress(address);
+	public ResponseEntity <String> childAlertAddress (@PathVariable(required = true, name = "address") String address) throws Exception {
+		logger.debug("lancement chilAlertAddress URL avec l'adresse : {}", address);
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 	    try {
-	    	logger.info("reponse OK chilAlertAddress URL ");
-	    	String reponseString = mapper.writer()
-					.writeValueAsString(reponse);
-			return reponseString;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	    logger.error("reponse KO chilAlertAddress URL ");
-	    return "Error";
+			Map<String, Object> reponse = donneesLieesService.getChildAlertAddress(address);
+	        String reponseString = mapper.writeValueAsString(reponse); // Conversion avec indentation
+	        logger.info("Réponse OK childAlertAdress ");
+	        return ResponseEntity.ok(reponseString); // Retourne le JSON indenté
+	    } catch (Exception e) {
+	        logger.error("Erreur lors de l'appel à getChilAlertAddress : {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("{\"error\": \"Une erreur est survenue.\"}");
+	    }
 	}
 
 /**
@@ -80,64 +77,62 @@ public class DonneesLieesController {
  * @throws Exception
  */
 	@GetMapping("/phoneAlert/{stationNumber}")
-	public String phoneAlerteFireStation (@PathVariable(required = true, name = "stationNumber") int stationNumber) throws Exception {
-		logger.debug("lancement phoneAlerte URL ");
-		Map<String, Object> reponse = donneesLieesService.getPhoneAlerteFireStation(stationNumber);
+	public ResponseEntity <String> phoneAlerteFireStation (@PathVariable(required = true, name = "stationNumber") int stationNumber) throws Exception {
+		logger.debug("lancement phoneAlerte avec la stationNumber : {}", stationNumber);
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 	    try {
-	    	logger.info("reponse OK phoneAlerteFireStation URL ");
-			String reponseString = mapper.writer()
-					.writeValueAsString(reponse);
-			return reponseString;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	    logger.error("reponse KO phoneAlerteFireStation URL ");
-	    return "Error";
+	    	Map<String, Object> reponse = donneesLieesService.getPhoneAlerteFireStation(stationNumber);
+	        String reponseString = mapper.writeValueAsString(reponse); // Conversion avec indentation
+	        logger.info("Réponse OK phoneAlert ");
+	        return ResponseEntity.ok(reponseString); // Retourne le JSON indenté
+	    } catch (Exception e) {
+	        logger.error("Erreur lors de l'appel à getPhoneAlert : {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("{\"error\": \"Une erreur est survenue.\"}");
+	    }
 	}
 /**
  * Controller de fireAddress
  * @param address
  * @return
  * @throws Exception
+ * 
  */
-	@GetMapping("/fire/{address}")
-	public String fireAddress (@PathVariable(required = true, name = "address") String address) throws Exception {
-		logger.debug("lancement fireAddress URL ");
-		Map<String, Object> reponse = donneesLieesService.getFireAddress(address);
-		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+	@GetMapping("/fire/{address}") // c'est le service qui retourne l'exception, non le controller. 
+	public ResponseEntity <String> fireAddress (@PathVariable(required = true, name = "address") String address) throws Exception {
+	    logger.debug("Lancement fireAddress avec l'adresse : {}", address);
+	    ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 	    try {
-	    	logger.info("reponse OK fireAddress URL ");
-			String reponseString = mapper.writer()
-					.writeValueAsString(reponse);
-			return reponseString;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	    logger.error("reponse KO fireAddress URL ");
-	    return "Error";
+	    	Map<String, Object> reponse = donneesLieesService.getFireAddress(address);
+	        String reponseString = mapper.writeValueAsString(reponse); // Conversion avec indentation
+	        logger.info("Réponse OK fireAddress");
+	        return ResponseEntity.ok(reponseString); // Retourne le JSON indenté
+	    } catch (Exception e) {
+	        logger.error("Erreur lors de l'appel à getFireAddress : {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("{\"error\": \"Une erreur est survenue.\"}");
+	    }
 	}
 /**
  * Controller de l'url floodstation
  * @param stationNumber
  * @return
  * @throws Exception
- */
+ */ 
 	@GetMapping("/flood/{listStationNumber}")
-	public String floodStation (@PathVariable(required = true, name = "listStationNumber") List<Integer> ListstationNumber) throws Exception {
-		logger.debug("lancement floodStation URL ");
-		Map<String, Object> reponse = donneesLieesService.getFloodStations(ListstationNumber);
+	public ResponseEntity<String> floodStation (@PathVariable(required = true, name = "listStationNumber") List<Integer> liststationNumber) throws Exception {
+		logger.debug("Lancement floodStation avec la liste des stationNumber : {}", liststationNumber);
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
-	    try {
-	    	logger.info("reponse OK floodStation URL ");
-			String reponseString = mapper.writer()
-					.writeValueAsString(reponse);
-			return reponseString;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	    logger.error("reponse KO floodStation URL ");
-	    return "Error";
+		try {
+	    	Map<String, Object> reponse = donneesLieesService.getFloodStations(liststationNumber);
+	        String reponseString = mapper.writeValueAsString(reponse); // Conversion avec indentation
+	        logger.info("Réponse OK floodStation ");
+	        return ResponseEntity.ok(reponseString); // Retourne le JSON indenté
+	    } catch (Exception e) {
+	        logger.error("Erreur lors de l'appel à getFloodStation : {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("{\"error\": \"Une erreur est survenue.\"}");
+	    }
 	}
 /**
  * Controller de personInfoLastName	
@@ -147,20 +142,19 @@ public class DonneesLieesController {
  */
 	
 	@GetMapping("/personInfoLastName/{lastName}")
-	public String personInfoLastName (@PathVariable(required = true, name = "lastName") String lastName) throws Exception {
-		logger.debug("lancement personInfoLastName URL ");
-		Map<String, Object> reponse = donneesLieesService.getPersonInfoLastName(lastName);
+	public ResponseEntity <String> personInfoLastName (@PathVariable(required = true, name = "lastName") String lastName) throws Exception {
+		logger.debug("lancement personInfoLastName URL avec le nom de famille : {}", lastName);
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 	    try {
-	    	logger.info("reponse OK personInfoLastName URL ");
-			String reponseString = mapper.writer()
-					.writeValueAsString(reponse);
-			return reponseString;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	    logger.error("reponse KO personInfoLastName URL ");
-	    return "Error";
+	    	Map<String, Object> reponse = donneesLieesService.getPersonInfoLastName(lastName);
+	        String reponseString = mapper.writeValueAsString(reponse); // Conversion avec indentation
+	        logger.info("Réponse OK perInfoLastName ");
+	        return ResponseEntity.ok(reponseString); // Retourne le JSON indenté
+	    } catch (Exception e) {
+	        logger.error("Erreur lors de l'appel à getPersonInfoLastName : {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("{\"error\": \"Une erreur est survenue.\"}");
+	    }
 	}
 /**
  * Controller de l'url communityEmail
@@ -169,19 +163,18 @@ public class DonneesLieesController {
  * @throws Exception
  */
 	@GetMapping("/communityEmail/{city}")
-	public String communityEmail (@PathVariable(required = true, name = "city") String city) throws Exception {
-		logger.debug("lancement communityEmail URL ");
-		Map<String, Object> reponse = donneesLieesService.getCommunityEmail(city);
+	public ResponseEntity <String> communityEmail (@PathVariable(required = true, name = "city") String city) throws Exception {
+		logger.debug("lancement communityEmail URL avec la ville : {}", city);
 		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 	    try {
-	    	logger.info("reponse OK communityEmail URL ");
-			String reponseString = mapper.writer()
-					.writeValueAsString(reponse);
-			return reponseString;
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-	    logger.error("reponse KO communityEmail URL ");
-	    return "Error";
+	    	Map<String, Object> reponse = donneesLieesService.getCommunityEmail(city);
+	        String reponseString = mapper.writeValueAsString(reponse); // Conversion avec indentation
+	        logger.info("Réponse OK communityEmail ");
+	        return ResponseEntity.ok(reponseString); // Retourne le JSON indenté
+	    } catch (Exception e) {
+	        logger.error("Erreur lors de l'appel à getCommunityEmail : {}", e.getMessage());
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("{\"error\": \"Une erreur est survenue.\"}");
+	    }
 	}
 }
