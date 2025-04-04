@@ -54,9 +54,11 @@ public class MedicalRecordService {
 			logger.debug("methode addMedicalRecord : le MedicalRecord a bien été ajouté");
 			// Ecrire les données.
 	    	writer.jsonWriter(donneesBrute);
-	    	logger.debug("methode addMedicalRecord : fin de la methode");
+	    	return medicalRecord;
+	    	
 		} 
-		return medicalRecord;
+		logger.debug("methode addMedicalRecord : fin de la methode");
+		return null;
     }
     /**
      * Permet de supprimer un medicalRecord selon le firstName lastName

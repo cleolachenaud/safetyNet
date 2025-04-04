@@ -5,6 +5,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -18,9 +19,10 @@ import com.oprprojet.safetyNet.model.Donnees;
 @Repository
 public class Writer {
 	private static final Logger logger = LogManager.getLogger(Writer.class);
-	
+	@Value ("${fichier.entree}")
+	private String nomDeFichier;
 	public void jsonWriter(Donnees donnees) throws Exception{
-		this.jsonWriter(Reader.NOM_FICHIER_JSON, donnees);
+		this.jsonWriter(nomDeFichier, donnees);
 	}
 	
 	/**
@@ -33,13 +35,14 @@ public class Writer {
 	public void jsonWriter(String cheminDuFichier, Donnees donnees) throws Exception{
 		logger.debug("jsonWriter : lancement de la methode");
 		ObjectMapper objectMapper = new ObjectMapper();
-
+		/*
 	    SimpleFilterProvider filterProvider = new SimpleFilterProvider()
     			.addFilter("PersonJsonFilter" ,SimpleBeanPropertyFilter.serializeAll()) 
     			.addFilter("MedicalRecordJsonFilter" ,SimpleBeanPropertyFilter.serializeAll())
     			.addFilter("FireStationJsonFilter" ,SimpleBeanPropertyFilter.serializeAll())
     			;
 	    objectMapper.setFilterProvider(filterProvider);
+	    */
 
 	    
 		try {

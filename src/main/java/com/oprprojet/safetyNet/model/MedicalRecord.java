@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonFilter("MedicalRecordJsonFilter") 
 public class MedicalRecord {
 	private String firstName;
     private String lastName;

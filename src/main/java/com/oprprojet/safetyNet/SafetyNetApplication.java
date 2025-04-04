@@ -1,7 +1,11 @@
 package com.oprprojet.safetyNet;
-import static com.oprprojet.safetyNet.repository.Reader.NOM_FICHIER_JSON;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
@@ -28,7 +32,8 @@ public class SafetyNetApplication implements CommandLineRunner {
 	Reader reader;
 	@Autowired
 	DonneesLieesController donneesLieesController;
-
+	@Value ("${fichier.entree}")
+	private String nomDeFichier;
 	@Autowired
 	CustomProperties properties;
 	public static void main(String[] args) {
@@ -39,11 +44,19 @@ public class SafetyNetApplication implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		Donnees donnees = reader.jsonReader(NOM_FICHIER_JSON);
+		Donnees donnees = reader.jsonReader(nomDeFichier);
+		List <Integer> floodStationList = new ArrayList<>();
+		floodStationList.add(1);
+		floodStationList.add(2);
 			//Writer.jsonWriter("C:\\Users\\cleol\\Desktop\\PROJET5\\safetyNet\\donneesSorties\\fichierSortie.json", donnees);
-		System.out.println(properties.getApiUrl());
+		//System.out.println(properties.getApiUrl());
 		//System.out.println(donneesLieesController.childAlertAddress("1509 Culver St"));
-		
+		//System.out.println(donneesLieesController.fireStationStationNumber(1));
+		//System.out.println(donneesLieesController.phoneAlerteFireStation(1));
+		//System.out.println(donneesLieesController.fireAddress("1509 Culver St"));
+		//System.out.println(donneesLieesController.floodStation(floodStationList));
+		//System.out.println(donneesLieesController.personInfoLastName("Boyd"));
+		//System.out.println(donneesLieesController.communityEmail("Culver"));
 	}
 	
 	public static void exitApplication() {   

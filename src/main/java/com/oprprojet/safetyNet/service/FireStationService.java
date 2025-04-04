@@ -56,10 +56,11 @@ public class FireStationService {
 	    	logger.debug("methode addFireStation : la FireStation a bien été ajoutée");
 			// Ecrire les données.
 	    	writer.jsonWriter(donneesBrute);
-	    	
+			return fireStation;
 		} 
 		logger.debug("methode addFireStation : fin de la methode");
-		return fireStation;
+
+		return null;
     }
     /**
      * Permet de supprimer une FireStation selon l'address ou la stationNumber 

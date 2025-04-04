@@ -1,5 +1,7 @@
 package com.oprprojet.safetyNet.controller;
 
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.oprprojet.safetyNet.model.FireStation;
 import com.oprprojet.safetyNet.service.FireStationService;
 
@@ -31,18 +35,25 @@ public class FireStationController {
 	 * @param fireStation
 	 * @return
 	 */
-    public ResponseEntity<FireStation> createFireStation(@PathVariable String address, int stationNumber) {
+    public ResponseEntity<FireStation> createFireStation(@RequestBody FireStation fireStation) {
+		logger.debug("lancement createFireStation : {}", fireStation);
 		FireStation fireStationReponse;
+		//ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		try {
-			fireStationReponse = fireStationService.addFireStation(new FireStation(address, stationNumber));
+			fireStationReponse = fireStationService.addFireStation(fireStation);
+			//String reponseString = mapper.writeValueAsString(fireStationReponse);
 		 
 		} catch (Exception e) {
 			logger.error("createFireStation : la fireStation n'a pas été créee ");
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.internalServerError().build();
+		}
+		if (fireStationReponse == null) {
+			return ResponseEntity.status(500).body(fireStationReponse);
 		}
 		logger.info("createFireStation : réponse OK, la fireStation est créee");
 		return ResponseEntity.ok(fireStationReponse);
       
+			    
     }
 	
 	@DeleteMapping
@@ -51,12 +62,13 @@ public class FireStationController {
 	 * @param fireStation
 	 * @return
 	 */
-    public ResponseEntity<FireStation> deleteFireStation(@PathVariable String address, int stationNumber) { 
+    public ResponseEntity<FireStation> deleteFireStation(@RequestBody FireStation fireStation) { 
+		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		try {
-			fireStationService.deleteFireStation(new FireStation(address, stationNumber));
+			fireStationService.deleteFireStation(fireStation);
 		} catch (Exception e) {
 			logger.error("deleteFireStation : la fireStation n'a pas été supprimée ");
-			return ResponseEntity.notFound().build(); 
+			return ResponseEntity.internalServerError().build();
 		}
 		logger.info("deleteFireStation : réponse OK, la fireStation est supprimée");
 		return ResponseEntity.ok(null);
@@ -68,13 +80,17 @@ public class FireStationController {
 	 * @param fireStation
 	 * @return
 	 */
-    public ResponseEntity<FireStation> majFireStation(@PathVariable String address, int stationNumber) {
+    public ResponseEntity<FireStation> majFireStation(@RequestBody FireStation fireStation) {
+		//ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		FireStation fireStationReponse;
 		try {
-			fireStationReponse = fireStationService.updateFireStation(new FireStation(address, stationNumber));
+			fireStationReponse = fireStationService.updateFireStation(fireStation);
 		} catch (Exception e) {
 			logger.error("updateFireStation : la fireStation n'a pas été mise à jour ");
 			return ResponseEntity.notFound().build();
+		}
+		if (fireStationReponse == null) {
+			return ResponseEntity.status(300).body(fireStationReponse);
 		}
 		logger.info("updateFireStation : réponse OK, la fireStation est mise à jour");
 		return ResponseEntity.ok(fireStationReponse);

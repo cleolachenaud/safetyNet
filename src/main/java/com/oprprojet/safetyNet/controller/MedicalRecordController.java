@@ -36,25 +36,30 @@ public class MedicalRecordController {
 	 * @param medicalRecord
 	 * @return
 	 */
-    public ResponseEntity<MedicalRecord> createMedicalRecord(@PathVariable String firstName, String lastName, Date birthdate, List<String> medications, List<String> allergies) {
+    public ResponseEntity<MedicalRecord> createMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
 		MedicalRecord medicalRecordReponse;
 		try {
-			medicalRecordReponse = medicalRecordService.addMedicalRecord(new MedicalRecord(firstName, lastName, birthdate, medications, allergies));
+			medicalRecordReponse = medicalRecordService.addMedicalRecord(medicalRecord);
+			
 		} catch (Exception e) {
 			logger.error("createMedicalRecord : le medicalRecord n'a pas été crée ");
 			return ResponseEntity.notFound().build();
+		}
+		
+		if (medicalRecordReponse == null) {
+			return ResponseEntity.status(300).body(medicalRecordReponse);
 		}
 		logger.info("createMedicalRecord : réponse OK, le medicalRecord est crée");
 		return ResponseEntity.ok(medicalRecordReponse);
     }
 	
-	@DeleteMapping
+	@DeleteMapping("/{firstName}/{lastName}")
 	/**
 	 * controller qui permet de supprimer un medicalRecord avec en clé firstName et lastName
 	 * @param medicalRecord
 	 * @return
 	 */
-    public ResponseEntity<MedicalRecord> deleteMedicalRecord(@PathVariable String firstName, String lastName) {
+    public ResponseEntity<MedicalRecord> deleteMedicalRecord(@PathVariable String firstName, @PathVariable String lastName) {
 		
 		try {
 			medicalRecordService.deleteMedicalRecord(firstName, lastName);
@@ -71,13 +76,16 @@ public class MedicalRecordController {
 	 * @param medicalRecord
 	 * @return
 	 */
-    public ResponseEntity<MedicalRecord> majMedicalRecord(@PathVariable String firstName, String lastName, Date birthdate, List<String> medications, List<String> allergies) {
+    public ResponseEntity<MedicalRecord> majMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
 		MedicalRecord medicalRecordReponse;
 		try { 
-			medicalRecordReponse = medicalRecordService.updateMedicalRecord(new MedicalRecord(firstName, lastName, birthdate, medications, allergies));
+			medicalRecordReponse = medicalRecordService.updateMedicalRecord(medicalRecord);
 		} catch (Exception e) {
 			logger.error("updateMedicalRecord : le medicalRecord n'a pas été mis à jour ");
 			return ResponseEntity.notFound().build();
+		}
+		if (medicalRecordReponse == null) {
+			return ResponseEntity.status(300).body(medicalRecordReponse);
 		}
 		logger.info("updateMedicalRecord : réponse OK, le medicalRecord est mis à jour");
 		return ResponseEntity.ok(medicalRecordReponse);

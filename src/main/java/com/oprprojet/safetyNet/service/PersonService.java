@@ -94,21 +94,21 @@ public class PersonService {
     	List<Person> personList = donneesBrute.getPersons();
     	Person personMisAJour = new Person();
     	for(Person personElement : personList) {
-    		if(personElement.getFirstName() != person.getFirstName() && personElement.getLastName() != person.getLastName()){
+    		if(!personElement.getFirstName().equals(person.getFirstName()) && !personElement.getLastName().equals(person.getLastName())){
     			continue;
     		} 
-    		if(!person.getAddress().isEmpty()) {
+    		if(person.getAddress() !=null) {
     			personElement.setAddress(person.getAddress());
     			personMisAJour.setAddress(personElement.getAddress());
     		}
-    		if(!person.getCity().isEmpty()) {
+    		if(person.getCity() !=null) {
     			personElement.setCity(person.getCity());
     			personMisAJour.setCity(personElement.getCity());
     		}
-    		if(!person.getEmail().isEmpty()) {
+    		if(person.getEmail() !=null) {
     			personElement.setEmail(person.getEmail());
     		}
-    		if(!person.getPhone().isEmpty()) {
+    		if(person.getPhone() !=null) {
     			personElement.setPhone(person.getPhone());
     			personMisAJour.setPhone(personElement.getPhone());
     			personMisAJour.setEmail(personElement.getEmail());

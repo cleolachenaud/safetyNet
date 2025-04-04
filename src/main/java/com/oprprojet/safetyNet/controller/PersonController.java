@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.oprprojet.safetyNet.model.MedicalRecord;
 import com.oprprojet.safetyNet.model.Person;
 import com.oprprojet.safetyNet.service.PersonService;
 
@@ -22,6 +23,7 @@ public class PersonController {
 	 private static final Logger logger = LogManager.getLogger(Person.class);
 	@Autowired
 	Person personreponse;
+	
 	@Autowired
 	PersonService personService;
 
@@ -31,25 +33,28 @@ public class PersonController {
 	 * @param person
 	 * @return
 	 */
-    public ResponseEntity<Person> createPerson(@PathVariable String firstName, String lastName, String address, String city, int zip, String phone, String email) {
-		Person personreponse;
+    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+		Person personReponse;
 		try {
-			personreponse = personService.addPerson(new Person(firstName, lastName, address, city, zip, phone, email));
+			personReponse = personService.addPerson(person);
 		} catch (Exception e) {
 			logger.error("createPerson : la person n'a pas été créee ");
 			return ResponseEntity.notFound().build();
 		}
+		if (personReponse == null) {
+			return ResponseEntity.status(300).body(personReponse);
+		}
 		logger.info("createPerson : réponse OK, la person est créee");
-		return ResponseEntity.ok(personreponse);
+		return ResponseEntity.ok(personReponse);
     }
 	
-	@DeleteMapping
+	@DeleteMapping("/{firstName}/{lastName}")
 	/**
 	 * controller qui permet de supprimer une Person via son firstName + lastName
 	 * @param person
 	 * @return
 	 */
-    public ResponseEntity<Person> deletePerson(@PathVariable String firstName, String lastName) {
+    public ResponseEntity<Person> deletePerson(@PathVariable String firstName, @PathVariable String lastName) {
 		try {
 			personService.deletePerson(firstName, lastName);
 		} catch (Exception e) {
@@ -66,16 +71,19 @@ public class PersonController {
 	 * @param person
 	 * @return
 	 */
-    public ResponseEntity<Person> majPerson(@PathVariable String firstName, String lastName, String address, String city, int zip, String phone, String email) {
-		Person personreponse;
+    public ResponseEntity<Person> majPerson(@RequestBody Person person) {
+		Person personReponse;
 		try {
-			personreponse = personService.updatePerson(new Person(firstName, lastName, address, city, zip, phone, email));
+			personReponse = personService.updatePerson(person);
 		} catch (Exception e) {
 			logger.error("updatePerson : la person n'a pas été mise à jour ");
 			return ResponseEntity.notFound().build();
 		}
+		if (personReponse == null) {
+			return ResponseEntity.status(300).body(personReponse);
+		}
 		logger.info("updatePerson : réponse OK, la person est mise à jour");
-		return ResponseEntity.ok(personreponse);
+		return ResponseEntity.ok(personReponse);
     }
 
 }

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -15,12 +16,15 @@ import com.oprprojet.safetyNet.model.Donnees;
 @Component
 @Repository
 public class Reader {
-	public final static String NOM_FICHIER_JSON = "data.json";
+	
+	
 	private static final Logger logger = LogManager.getLogger(Writer.class);
 
+	@Value ("${fichier.entree}")
+	private String nomDeFichier;
 	public Donnees jsonReader() throws Exception {
 		
-		return this.jsonReader (Reader.NOM_FICHIER_JSON);
+		return this.jsonReader (nomDeFichier);
 	}
 	/**
 	 * méthode qui permet de lire le fichier Json transmis

@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Component
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonFilter("PersonJsonFilter")
 public class Person {
 		private String firstName;
 		private String lastName;
