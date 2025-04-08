@@ -50,10 +50,8 @@ public class FireStationControllerTest {
     String jsonContent = "{ \"address\": \"newValue\", \"stationNumber\": \"9\"}";
     @Test
     public void addFireStationTest() throws Exception {
-    	fireStation.setAddress("newValue");
-    	fireStation.setStation(9);
+    	fireStation = new FireStation("newValue", 9);
        doReturn(fireStation).when(fireStationService).addFireStation(any());
-       
 		mockMvc.perform(
 		   	post("http://localhost:8080/firestation", fireStation)
             .contentType(MediaType.APPLICATION_JSON)
@@ -65,33 +63,33 @@ public class FireStationControllerTest {
     } 
     @Test
     public void addFireStationTestKo() throws Exception {
- 	   
+    	doReturn(null).when(fireStationService).addFireStation(any());
 		mockMvc.perform(
 		   	post("http://localhost:8080/firestation", fireStation)
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
             .content(jsonContent)
-		).andExpect(status().is(500))
+		).andExpect(status().isNotFound())
    		;
     }  
     @Test
     public void deleteFireStationTest() throws Exception {
-    	
+        String jsonContent = "{ \"address\": \"newValue\", \"stationNumber\": \"9\"}";
+    	fireStation = new FireStation("newValue", 9);
 	   doNothing().when(fireStationService).deleteFireStation(fireStation);
 	   mockMvc.perform(
-		   	delete("http://localhost:8080/firestation", fireStation)
+		   	delete("http://localhost:8080/firestation")
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
             .content(jsonContent)
-		).andExpect(status().isOk())
+		).andExpect(status().isNoContent())
 	     .andExpect(jsonPath("$.address").doesNotExist());
    		;
     } 
 
     @Test
     public void majFireStationTest() throws Exception {
-    	fireStation.setAddress("new");
-    	fireStation.setStation(9);
+    fireStation = new FireStation("new", 9);
     doReturn(fireStation).when(fireStationService).updateFireStation(any());
 	   	mockMvc.perform(
 		   	put("http://localhost:8080/firestation", fireStation)
@@ -105,13 +103,13 @@ public class FireStationControllerTest {
     
     @Test
     public void majFireStationTestKo() throws Exception {
-	   
+    	doReturn(null).when(fireStationService).updateFireStation(any());
 	   	mockMvc.perform(
 		   	put("http://localhost:8080/firestation", fireStation)
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
             .content(jsonContent)
-		).andExpect(status().is(300))
+		).andExpect(status().isNotFound())
    		;
     } 
 }

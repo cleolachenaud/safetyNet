@@ -43,11 +43,11 @@ public class MedicalRecordController {
 			
 		} catch (Exception e) {
 			logger.error("createMedicalRecord : le medicalRecord n'a pas été crée ");
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		
 		if (medicalRecordReponse == null) {
-			return ResponseEntity.status(300).body(medicalRecordReponse);
+			return ResponseEntity.notFound().build();
 		}
 		logger.info("createMedicalRecord : réponse OK, le medicalRecord est crée");
 		return ResponseEntity.ok(medicalRecordReponse);
@@ -65,10 +65,10 @@ public class MedicalRecordController {
 			medicalRecordService.deleteMedicalRecord(firstName, lastName);
 		} catch (Exception e) {
 			logger.error("deleteMedicalRecord : le medicalRecord n'a pas été supprimé ");
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		logger.info("deleteMedicalRecord : réponse OK, le medicalRecord est supprimé");
-		return ResponseEntity.ok(null);
+		return ResponseEntity.noContent().build();
     }
 	@PutMapping
 	/**
@@ -82,10 +82,10 @@ public class MedicalRecordController {
 			medicalRecordReponse = medicalRecordService.updateMedicalRecord(medicalRecord);
 		} catch (Exception e) {
 			logger.error("updateMedicalRecord : le medicalRecord n'a pas été mis à jour ");
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 		if (medicalRecordReponse == null) {
-			return ResponseEntity.status(300).body(medicalRecordReponse);
+			return ResponseEntity.notFound().build();
 		}
 		logger.info("updateMedicalRecord : réponse OK, le medicalRecord est mis à jour");
 		return ResponseEntity.ok(medicalRecordReponse);

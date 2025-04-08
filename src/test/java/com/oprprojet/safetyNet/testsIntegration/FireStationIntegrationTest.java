@@ -88,7 +88,7 @@ public class FireStationIntegrationTest {
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
             .content(jsonContent)
-		).andExpect(status().isOk())
+		).andExpect(status().isNoContent())
 	     .andExpect(jsonPath("$.address").doesNotExist());
    		;
     } 

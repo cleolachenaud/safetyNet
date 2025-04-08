@@ -73,12 +73,13 @@ public class medicalRecordControllerTest {
     } 
     @Test
     public void addMedicalRecordTestKo() throws Exception {
+    	doReturn(null).when(medicalRecordService).addMedicalRecord(any());
 		mockMvc.perform(
 		   	post("http://localhost:8080/medicalRecord", medicalRecord)
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
             .content(jsonContent)
-		).andExpect(status().is(300))
+		).andExpect(status().isNotFound())
    		;
     }  
 
@@ -94,14 +95,27 @@ public class medicalRecordControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
         )
-        .andExpect(status().isOk())
+        .andExpect(status().isNoContent())
         .andExpect(jsonPath("$.lastName").doesNotExist());
+    }
+    @Test
+    public void deleteMedicalRecordTestNull() throws Exception {
+        String firstName = null;
+        String lastName = null;
+
+        doNothing().when(medicalRecordService).deleteMedicalRecord(firstName, lastName);
+        mockMvc.perform(
+            delete("http://localhost:8080/medicalRecord/{firstName}/{lastName}", firstName, lastName)
+            .contentType(MediaType.APPLICATION_JSON)
+            .characterEncoding("utf-8")
+        ).andExpect(status().isNotFound())
+        ;
     }
     @Test
     public void majMedicalRecordTest() throws Exception {
     	Date birthdate = createBirthdate("2021-04-14");
         medicalRecord = new MedicalRecord("Moja", "Paddaone", birthdate, List.of("baytril"), List.of("avocat"));
-    doReturn(medicalRecord).when(medicalRecordService).updateMedicalRecord(any());
+        doReturn(medicalRecord).when(medicalRecordService).updateMedicalRecord(any());
 	   	mockMvc.perform(
 		   	put("http://localhost:8080/medicalRecord", medicalRecord)
             .contentType(MediaType.APPLICATION_JSON)
@@ -114,13 +128,13 @@ public class medicalRecordControllerTest {
     
     @Test
     public void majMedicalRecordTestKo() throws Exception {
-    
+    	doReturn(null).when(medicalRecordService).updateMedicalRecord(any());
 	   	mockMvc.perform(
 		   	put("http://localhost:8080/medicalRecord", medicalRecord)
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
             .content(jsonContent)
-		).andExpect(status().is(300))
+		).andExpect(status().isNotFound())
    		;
     } 
     

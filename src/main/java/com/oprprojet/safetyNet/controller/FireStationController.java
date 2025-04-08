@@ -38,17 +38,14 @@ public class FireStationController {
     public ResponseEntity<FireStation> createFireStation(@RequestBody FireStation fireStation) {
 		logger.debug("lancement createFireStation : {}", fireStation);
 		FireStation fireStationReponse;
-		//ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 		try {
-			fireStationReponse = fireStationService.addFireStation(fireStation);
-			//String reponseString = mapper.writeValueAsString(fireStationReponse);
-		 
+			fireStationReponse = fireStationService.addFireStation(fireStation);		 
 		} catch (Exception e) {
 			logger.error("createFireStation : la fireStation n'a pas été créee ");
-			return ResponseEntity.internalServerError().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Internal Server Error
 		}
 		if (fireStationReponse == null) {
-			return ResponseEntity.status(500).body(fireStationReponse);
+			return ResponseEntity.notFound().build();
 		}
 		logger.info("createFireStation : réponse OK, la fireStation est créee");
 		return ResponseEntity.ok(fireStationReponse);
@@ -62,16 +59,15 @@ public class FireStationController {
 	 * @param fireStation
 	 * @return
 	 */
-    public ResponseEntity<FireStation> deleteFireStation(@RequestBody FireStation fireStation) { 
-		ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+    public ResponseEntity<FireStation> deleteFireStation(@RequestBody FireStation fireStation) {
 		try {
 			fireStationService.deleteFireStation(fireStation);
 		} catch (Exception e) {
 			logger.error("deleteFireStation : la fireStation n'a pas été supprimée ");
-			return ResponseEntity.internalServerError().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Internal Server Error
 		}
 		logger.info("deleteFireStation : réponse OK, la fireStation est supprimée");
-		return ResponseEntity.ok(null);
+		return ResponseEntity.noContent().build();
          
     }
 	@PutMapping
@@ -87,10 +83,10 @@ public class FireStationController {
 			fireStationReponse = fireStationService.updateFireStation(fireStation);
 		} catch (Exception e) {
 			logger.error("updateFireStation : la fireStation n'a pas été mise à jour ");
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Internal Server Error
 		}
 		if (fireStationReponse == null) {
-			return ResponseEntity.status(300).body(fireStationReponse);
+			return ResponseEntity.notFound().build(); // 404 Not Found
 		}
 		logger.info("updateFireStation : réponse OK, la fireStation est mise à jour");
 		return ResponseEntity.ok(fireStationReponse);

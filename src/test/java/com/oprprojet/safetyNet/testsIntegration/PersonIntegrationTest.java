@@ -92,8 +92,8 @@ public class PersonIntegrationTest {
 			   delete("http://localhost:8080/person/{firstName}/{lastName}", firstName, lastName)
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding("utf-8")
-            .content(jsonContentdelete)
-		).andExpect(status().isOk())
+            .content(jsonContentdelete))
+	     .andExpect(status().isNoContent())
 	     .andExpect(jsonPath("$.firstName").doesNotExist());
    		;
     } 

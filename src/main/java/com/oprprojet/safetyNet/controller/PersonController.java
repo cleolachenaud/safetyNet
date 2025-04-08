@@ -3,7 +3,7 @@ package com.oprprojet.safetyNet.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.oprprojet.safetyNet.model.MedicalRecord;
 import com.oprprojet.safetyNet.model.Person;
 import com.oprprojet.safetyNet.service.PersonService;
+
+import exceptions.PersonNotFoundException;
 
 @RestController
 @RequestMapping("/person")
@@ -37,12 +39,12 @@ public class PersonController {
 		Person personReponse;
 		try {
 			personReponse = personService.addPerson(person);
-		} catch (Exception e) {
-			logger.error("createPerson : la person n'a pas été créee ");
-			return ResponseEntity.notFound().build();
-		}
+	    } catch (Exception e) {
+	        logger.error("createPerson : erreur inattendue lors de la mise à jour de la personne", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Internal Server Error
+	    }
 		if (personReponse == null) {
-			return ResponseEntity.status(300).body(personReponse);
+			return ResponseEntity.notFound().build();
 		}
 		logger.info("createPerson : réponse OK, la person est créee");
 		return ResponseEntity.ok(personReponse);
@@ -57,12 +59,12 @@ public class PersonController {
     public ResponseEntity<Person> deletePerson(@PathVariable String firstName, @PathVariable String lastName) {
 		try {
 			personService.deletePerson(firstName, lastName);
-		} catch (Exception e) {
-			logger.error("deletePerson : la person n'a pas été supprimée ");
-			return ResponseEntity.notFound().build(); 
-		}
+	    } catch (Exception e) {
+	        logger.error("deletePerson : erreur inattendue lors de la mise à jour de la personne", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Internal Server Error
+	    }
 		logger.info("deletePerson : réponse OK, la person est supprimée");
-		return ResponseEntity.ok(null);
+		return ResponseEntity.noContent().build();
     }
 	@PutMapping
 	/**
@@ -71,19 +73,21 @@ public class PersonController {
 	 * @param person
 	 * @return
 	 */
-    public ResponseEntity<Person> majPerson(@RequestBody Person person) {
-		Person personReponse;
-		try {
-			personReponse = personService.updatePerson(person);
-		} catch (Exception e) {
-			logger.error("updatePerson : la person n'a pas été mise à jour ");
-			return ResponseEntity.notFound().build();
-		}
-		if (personReponse == null) {
-			return ResponseEntity.status(300).body(personReponse);
-		}
-		logger.info("updatePerson : réponse OK, la person est mise à jour");
-		return ResponseEntity.ok(personReponse);
+	public ResponseEntity<Person> majPerson(@RequestBody Person person) {
+	    Person personReponse;
+	    try {
+	        personReponse = personService.updatePerson(person);
+	    } catch (Exception e) {
+	        logger.error("updatePerson : erreur inattendue lors de la mise à jour de la personne", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500 Internal Server Error
+	    }
+	    
+	    if (personReponse == null) {
+	        return ResponseEntity.notFound().build(); // 404 Not Found
+	    }
+	    
+	    logger.info("updatePerson : réponse OK, la personne est mise à jour");
+	    return ResponseEntity.ok(personReponse);
     }
 
 }

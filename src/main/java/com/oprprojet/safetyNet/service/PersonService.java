@@ -16,6 +16,8 @@ import com.oprprojet.safetyNet.model.Person;
 import com.oprprojet.safetyNet.repository.Reader;
 import com.oprprojet.safetyNet.repository.Writer;
 
+import exceptions.PersonNotFoundException;
+
 @Service
 public class PersonService {
 	@Autowired
@@ -36,6 +38,7 @@ public class PersonService {
     	// Lire les données
     	Donnees donneesBrute = reader.jsonReader();
     	logger.debug("methode addPerson : debut du traitement");
+
     	// Ajouter la Person transmise dedans en vérifiant qu'elle n'existe pas déjà.
     	List<Person> personList = donneesBrute.getPersons();
     	Boolean personDejaExistante = false;
@@ -93,6 +96,7 @@ public class PersonService {
     	// modifie la person transmise.
     	List<Person> personList = donneesBrute.getPersons();
     	Person personMisAJour = new Person();
+
     	for(Person personElement : personList) {
     		if(!personElement.getFirstName().equals(person.getFirstName()) && !personElement.getLastName().equals(person.getLastName())){
     			continue;
