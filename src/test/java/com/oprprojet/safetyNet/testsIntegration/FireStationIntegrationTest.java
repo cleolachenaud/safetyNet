@@ -1,6 +1,7 @@
 package com.oprprojet.safetyNet.testsIntegration;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,73 +27,60 @@ import com.oprprojet.safetyNet.service.FireStationService;
 @RunWith(MockitoJUnitRunner.class)
 @AutoConfigureMockMvc
 public class FireStationIntegrationTest {
-	
-    @Autowired
-    Reader reader;
-    @Autowired
-    Writer writer;
+
 	@Autowired
-    private MockMvc mockMvc; 
-    @Autowired
-    FireStationService fireStationService;
-    @Autowired
-    FireStation fireStation;
-    
-    
-    
-    Donnees donnees;
-    @BeforeEach
-    public void setUp() throws Exception {
-    	donnees = reader.jsonReader();
-    }
-    
-    @AfterEach
-    public void remiseAZeroDuFichier() throws Exception{
-    	writer.jsonWriter(donnees);
-    }
-    
-    @Test
-    public void addFireStationTest() throws Exception {
-    	String jsonContent = "{ \"address\": \"newValue\", \"stationNumber\": \"7\"}";
-    	fireStation = new FireStation("newValue", 7);
+	Reader reader;
+	@Autowired
+	Writer writer;
+	@Autowired
+	private MockMvc mockMvc;
+	@Autowired
+	FireStationService fireStationService;
+	@Autowired
+	FireStation fireStation;
 
-    		mockMvc.perform(
-		   	post("http://localhost:8080/firestation", fireStation)
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding("utf-8")
-            .content(jsonContent)
-		).andExpect(status().isOk())
-		 .andExpect(jsonPath("$.address").value("newValue"));
-   		;
-    }
-    @Test
-    public void majFireStationTest() throws Exception {
-    	String jsonContent = "{ \"address\":\"908 73rd St\", \"station\":\"8\" }";
-    	fireStation = new FireStation("908 73rd St", 8);
-	   	mockMvc.perform(
-		   	put("http://localhost:8080/firestation", fireStation)
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding("utf-8")
-            .content(jsonContent)
-		).andExpect(status().isOk())
-	   	.andExpect(jsonPath("$.station").value("8"));
-   		;
-    } 
-    @Test
-    public void deleteFireStationTest() throws Exception {
-    	String jsonContent = "{ \"address\":\"908 73rd St\", \"station\":\"1\" }";
-    	fireStation = new FireStation("908 73rd St", 1);
-    	
-	   mockMvc.perform(
-		   	delete("http://localhost:8080/firestation", fireStation)
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding("utf-8")
-            .content(jsonContent)
-		).andExpect(status().isNoContent())
-	     .andExpect(jsonPath("$.address").doesNotExist());
-   		;
-    } 
+	Donnees donnees;
 
-    
+	@BeforeEach
+	public void setUp() throws Exception {
+		donnees = reader.jsonReader();
+	}
+
+	@AfterEach
+	public void remiseAZeroDuFichier() throws Exception {
+		writer.jsonWriter(donnees);
+	}
+
+	@Test
+	public void addFireStationTest() throws Exception {
+		String jsonContent = "{ \"address\": \"newValue\", \"stationNumber\": \"7\"}";
+		fireStation = new FireStation("newValue", 7);
+
+		mockMvc.perform(post("http://localhost:8080/firestation", fireStation).contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8").content(jsonContent)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.address").value("newValue"));
+		;
+	}
+
+	@Test
+	public void majFireStationTest() throws Exception {
+		String jsonContent = "{ \"address\":\"908 73rd St\", \"station\":\"8\" }";
+		fireStation = new FireStation("908 73rd St", 8);
+		mockMvc.perform(put("http://localhost:8080/firestation", fireStation).contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8").content(jsonContent)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.station").value("8"));
+		;
+	}
+
+	@Test
+	public void deleteFireStationTest() throws Exception {
+		String jsonContent = "{ \"address\":\"908 73rd St\", \"station\":\"1\" }";
+		fireStation = new FireStation("908 73rd St", 1);
+
+		mockMvc.perform(delete("http://localhost:8080/firestation", fireStation).contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8").content(jsonContent)).andExpect(status().isNoContent())
+				.andExpect(jsonPath("$.address").doesNotExist());
+		;
+	}
 
 }
